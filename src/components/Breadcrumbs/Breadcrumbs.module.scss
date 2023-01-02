@@ -1,0 +1,25 @@
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 1.4rem;
+}
+
+.link {
+    text-transform: capitalize;
+    white-space: nowrap;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &.active {
+        color: black;
+    }
+
+}
+
+
+.slash {
+    padding: 0 8px;
+}
