@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 
 import FacebookIcon from "@mui/icons-material/Facebook";
 
-import { LeftBackGround, Logo, RightBackGround } from "../../components/SVG";
-import Button from "../../components/Button";
-import TextField from "../../components/TextField";
+import { LeftBackGround, Logo, RightBackGround } from "../../../components/SVG";
+import Button from "../../../components/Button";
+import TextField from "../../../components/TextField";
 
-import { login } from "../../redux/slices/authSlice";
+import { login } from "../../../redux/slices/authSlice";
 
 import styles from "./Login.module.scss";
 

@@ -4,12 +4,12 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import FacebookIcon from "@mui/icons-material/Facebook";
 
-import { LeftBackGround, Logo, RightBackGround } from "../../components/SVG";
-import Button from "../../components/Button";
-import TextField from "../../components/TextField";
+import { LeftBackGround, Logo, RightBackGround } from "../../../components/SVG";
+import Button from "../../../components/Button";
+import TextField from "../../../components/TextField";
 
-import useRequest from "../../hooks/useRequest";
-import userAPI from "../../services/userAPI";
+import useRequest from "../../../hooks/useRequest";
+import userAPI from "../../../services/userAPI";
 
 import styles from "./Register.module.scss";
 

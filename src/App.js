@@ -4,10 +4,9 @@ import { Routes, Route, Navigate, useLocation, Outlet } from "react-router-dom";
 import DefaultLayout from "./layouts/DefaultLayout";
 import ProjectLayout from "./layouts/ProjectLayout";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
 import Page404 from "./pages/Page404";
-import Entry from "./pages/Entry";
 
 import MyProjects from "./pages/MyProjects";
 import UserList from "./pages/UserList";
@@ -25,7 +24,7 @@ import { toast } from "react-toastify";
 const ProtectRoute = ({ children }) => {
    const dispatch = useDispatch();
    const location = useLocation();
-   const { user, isTokenValid, isCheckingToken, isUserLogout } = useSelector(
+   const { user, isTokenValid, isCheckingToken } = useSelector(
       (state) => state.auth
    );
 
@@ -58,10 +57,8 @@ const ProtectRoute = ({ children }) => {
 function App() {
    return (
       <Routes>
-         {/* Entry Route */}
-         <Route path="/" element={<Entry />} />
-
          {/* Auth Route */}
+         <Route path="/" element={<Navigate to="/login" />} />
          <Route path="/login" element={<Login />} />
          <Route path="/register" element={<Register />} />
 
