@@ -32,7 +32,6 @@ const TextField = forwardRef(
 
       useEffect(() => {
          if (!autoHeight) return;
-         // Xử lý textarea có thể autoheight mà không bị scroll dọc
          myRef.current.addEventListener("input", autoResize);
 
          function autoResize() {
@@ -40,9 +39,7 @@ const TextField = forwardRef(
             this.style.height = this.scrollHeight + "px";
          }
 
-         return () => {
-            // myRef.current.removeEventListener('input', autoResize)
-         };
+         return () => {};
       }, []);
 
       return (

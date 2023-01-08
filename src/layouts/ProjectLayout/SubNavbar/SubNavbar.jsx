@@ -1,15 +1,7 @@
 import React from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import classnames from "classnames/bind";
-
 import ChevronLeftOutlinedIcon from "@mui/icons-material/ChevronLeftOutlined";
-
-import styles from "./SubNavbar.module.scss";
-import { ProjectLogo } from "../../../components/SVG";
-
-import useToggle from "../../../hooks/useToggle";
-
 import ViewKanbanOutlinedIcon from "@mui/icons-material/ViewKanbanOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
@@ -17,7 +9,12 @@ import FilterNoneOutlinedIcon from "@mui/icons-material/FilterNoneOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
 import FolderZipOutlinedIcon from "@mui/icons-material/FolderZipOutlined";
+import classnames from "classnames/bind";
 
+import { ProjectLogo } from "../../../components/SVG";
+import useToggle from "../../../hooks/useToggle";
+
+import styles from "./SubNavbar.module.scss";
 const cx = classnames.bind(styles);
 
 const SubNavbar = () => {

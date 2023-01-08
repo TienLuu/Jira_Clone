@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import Tippy from "@tippyjs/react/headless";
-
-import styles from "./Menu.module.scss";
 import classNames from "classnames/bind";
+
 import Popper from "../Popper/Popper";
 import MenuItem from "./MenuItem";
 import MenuHeader from "./MenuHeader";
 
+import styles from "./Menu.module.scss";
 const cx = classNames.bind(styles);
 
 const MoreMenu = ({

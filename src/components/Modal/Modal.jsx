@@ -5,6 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import classNames from "classnames/bind";
+
 import styles from "./Modal.module.scss";
 const cx = classNames.bind(styles);
 

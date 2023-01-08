@@ -3,23 +3,20 @@ import classnames from "classnames/bind";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
+import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
+import Avatar from "@mui/material/Avatar";
 
-import styles from "./UserList.module.scss";
 import MoreMenu from "../../components/MoreMenu";
 import SearchBar from "../../components/SearchBar";
 import TableData from "../../components/TableData";
 import NewUserForm from "../component/NewUserForm";
 
-import Avatar from "@mui/material/Avatar";
-
-import DeleteOutline from "@mui/icons-material/DeleteOutline";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
-import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
-
 import { getUsers } from "../../redux/slices/userSlice";
 import useRequest from "../../hooks/useRequest";
 import userAPI from "../../services/userAPI";
+import styles from "./UserList.module.scss";
 const cx = classnames.bind(styles);
 
 const UserList = () => {
@@ -51,8 +48,6 @@ const UserList = () => {
    const handleSearchParams = (debounceValue) => {
       dispatch(getUsers(debounceValue));
 
-      // kiểm tra xem nếu input có giá trị thì mới set query params,
-      //  nếu không có input value thì không set
       if (!debounceValue) {
          setSearchParams();
          return;
@@ -67,10 +62,6 @@ const UserList = () => {
          return;
       }
 
-      if (action === "edit") {
-         navigate(`/jira/users/${id}`);
-         return;
-      }
       if (action === "delete") {
          deleteUser
             .runAsync(id)
@@ -90,11 +81,6 @@ const UserList = () => {
          title: "Detail",
          icon: <FactCheckOutlinedIcon />,
          action: "detail",
-      },
-      {
-         title: "Edit",
-         icon: <EditOutlinedIcon />,
-         action: "edit",
       },
       {
          title: "Delete",

@@ -1,8 +1,8 @@
-import "./styles.scss";
 import { ToastContainer } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.css";
 import "tippy.js/dist/tippy.css";
+
+import "./styles.scss";
 
 const GlobalStyles = ({ children }) => {
    return (

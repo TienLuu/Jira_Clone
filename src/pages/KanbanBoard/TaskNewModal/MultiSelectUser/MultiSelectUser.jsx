@@ -1,14 +1,13 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
-
-import MenuSelect from "../../../../components/MenuSelect";
-
+import { useSelector } from "react-redux";
 import { Avatar } from "@mui/material";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
-
 import classnames from "classnames/bind";
+
+import MenuSelect from "../../../../components/MenuSelect";
+
 import styles from "./MultiSelectUser.module.scss";
-import { useSelector } from "react-redux";
 const cx = classnames.bind(styles);
 
 const MultiSelectUser = forwardRef((_, ref) => {
@@ -37,6 +36,7 @@ const MultiSelectUser = forwardRef((_, ref) => {
    };
 
    useImperativeHandle(ref, () => multiSelectMethod);
+
    return (
       <MenuSelect
          ref={selectRef}
@@ -77,7 +77,7 @@ const MultiSelectUser = forwardRef((_, ref) => {
                <span>
                   {item.name}
                   {selectedProject.creator.id === item.userId
-                     ? " 🔱 (Project owner)"
+                     ? " ✨ (Project owner)"
                      : ""}
                </span>
             </div>

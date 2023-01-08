@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import Grid from "@mui/material/Unstable_Grid2";
 import { toast } from "react-toastify";
 
-import Grid from "@mui/material/Unstable_Grid2";
-
-import styles from "./UserDetail.module.scss";
 import Button from "../../components/Button";
 import CustomLoadingOverlay from "../../components/TableData/CustomLoadingOverlay";
 import CustomErrorOverLay from "../../components/TableData/CustomErrorOverLay";
+import UserEditFormModal from "./UserEditFormModal";
 
 import useRequest from "../../hooks/useRequest";
 import userAPI from "../../services/userAPI";
-
 import { getUsersDetail } from "../../redux/slices/userSlice";
-import UserEditFormModal from "./UserEditFormModal";
+
+import styles from "./UserDetail.module.scss";
 
 const UserDetail = () => {
    const { userId } = useParams();
@@ -52,7 +51,6 @@ const UserDetail = () => {
 
    return (
       <div className={styles.wrapper}>
-         {/******** User information /********/}
          <div className={styles.title}>
             <h3>Basic Infomation</h3>
             <div className={styles.control}>
@@ -93,20 +91,6 @@ const UserDetail = () => {
                </div>
             </Grid>
          </Grid>
-         {/* <div className={styles.title}>
-                <h3>Advandce Infomation</h3>
-            </div> */}
-         {/* <TableData
-                            rows={selectedUser.thongTinDatVe || []}
-                            columns={columns}
-                            getRowId={(row) => row.maVe}
-                            rowsPerPageOptions={[10]}
-                            pageSize={10}
-                            loading={loading}
-                            error={error ? error : null}
-                            autoHeight
-                        /> */}
-         {/******** Modal edit user **********/}
          <UserEditFormModal open={isOpen} onClose={() => setIsOpen(!isOpen)} />
       </div>
    );

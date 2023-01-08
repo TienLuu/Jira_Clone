@@ -5,6 +5,7 @@ import styles from "./UnderDevelopment.module.scss";
 
 const UnderDevelopment = () => {
    const { days, hours, minutes, seconds } = useTimer(new Date("2023-03-1"));
+
    return (
       <div className={styles.wrapper}>
          <div className={styles.title}>

@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
+import classnames from "classnames/bind";
 
 import TextField from "../../../components/TextField";
 import Button from "../../../components/Button/Button";
@@ -7,7 +8,6 @@ import MyCkEditor from "../../../components/MyCkEditor/MyCkEditor";
 import MenuSelect from "../../../components/MenuSelect";
 import anothersAPI from "../../../services/anothersAPI";
 
-import classnames from "classnames/bind";
 import styles from "./ProjectForm.module.scss";
 const cx = classnames.bind(styles);
 
@@ -35,7 +35,6 @@ const ProjectForm = ({ onSubmit }) => {
       setOpen(false);
    };
 
-   // Dùng để lưu lại editor instance sau khi editor được khởi tạo
    const editorRef = useRef();
    const selectRef = useRef();
 

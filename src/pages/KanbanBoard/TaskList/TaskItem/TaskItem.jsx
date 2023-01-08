@@ -1,8 +1,10 @@
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-
+import { Draggable } from "react-beautiful-dnd";
+import { toast } from "react-toastify";
 import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
+import classnames from "classnames/bind";
 
 import MoreMenu from "../../../../components/MoreMenu";
 
@@ -14,11 +16,8 @@ import { getProjectDetail } from "../../../../redux/slices/projectSlice";
 import projectAPI from "../../../../services/projectAPI";
 import { taskTypeMap, priorityMap } from "../../dummyData";
 
-import { Draggable } from "react-beautiful-dnd";
-
-import classnames from "classnames/bind";
 import styles from "./TaskItem.module.scss";
-import { toast } from "react-toastify";
+
 const cx = classnames.bind(styles);
 
 const itemsMenu = [

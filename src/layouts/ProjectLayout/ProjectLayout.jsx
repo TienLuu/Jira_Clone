@@ -1,16 +1,15 @@
-import { useEffect, memo } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet, useParams } from "react-router-dom";
 import classnames from "classnames/bind";
 
 import Navbar from "./Navbar";
-
-import styles from "./ProjectLayout.module.scss";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import SubNavbar from "./SubNavbar";
 
 import { getProjectDetail } from "../../redux/slices/projectSlice";
 
+import styles from "./ProjectLayout.module.scss";
 const cx = classnames.bind(styles);
 
 const ProjectLayout = () => {

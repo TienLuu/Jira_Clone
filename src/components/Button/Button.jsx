@@ -1,9 +1,8 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import classnames from "classnames/bind";
 
 import styles from "./Button.module.scss";
-import classnames from "classnames/bind";
-import React from "react";
 const cx = classnames.bind(styles);
 
 const Button = ({
@@ -35,7 +34,6 @@ const Button = ({
       passProps.to = to;
    }
 
-   // có prop disable thì loại bỏ tất cả các event trên button
    if (disable) {
       Object.keys(passProps).forEach((prop) => {
          if (prop.startsWith("on")) {

@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -9,14 +8,8 @@ import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ClearIcon from "@mui/icons-material/Clear";
-
-import projectAPI from "../../../services/projectAPI";
-import anothersAPI from "../../../services/anothersAPI";
-import { toggleTaskModal, getTaskById } from "../../../redux/slices/taskSlice";
-
-import { getProjectDetail } from "../../../redux/slices/projectSlice";
-
-import { taskTypeMap, priorityMap } from "../dummyData";
+import { Avatar } from "@mui/material";
+import classnames from "classnames/bind";
 
 import Button from "../../../components/Button";
 import MenuSelect from "../../../components/MenuSelect";
@@ -26,9 +19,12 @@ import TimeTracking from "../../component/TimeTracking";
 import SkeletonLoad from "./SkeletonLoad";
 import Comment from "./Comment";
 
-import { Avatar } from "@mui/material";
+import projectAPI from "../../../services/projectAPI";
+import anothersAPI from "../../../services/anothersAPI";
+import { toggleTaskModal, getTaskById } from "../../../redux/slices/taskSlice";
+import { getProjectDetail } from "../../../redux/slices/projectSlice";
+import { taskTypeMap, priorityMap } from "../dummyData";
 
-import classnames from "classnames/bind";
 import styles from "./TaskDetailModal.module.scss";
 const cx = classnames.bind(styles);
 
@@ -46,7 +42,6 @@ const TaskDetailModal = () => {
       (state) => state.task
    );
    const { selectedProject } = useSelector((state) => state.project);
-   // const loading = true
 
    const handleOpenEditor = () => {
       SetIsEditorVisible(true);
@@ -56,11 +51,6 @@ const TaskDetailModal = () => {
       descriptionRef.current.setData(task.description);
    };
 
-   // Không có API updateTaskName nên dùng API updateTask(update toàn bộ thông tin)
-   // Vì vậy cần gán lại các field cần thiết để hợp lệ
-   // Đồng thời mỗi lần update các thông tin khác ngoài taskName thì cần dispatch getTaskDetail để lấy
-   // thông tin mới nhất tránh trường hợp khi update taskName, các field có các giá trị cũ làm reset lại tất cả
-   // các lần update các thông tin khác trước đó (gây ra render lại nhiều lần do mỗi lần cần update phải lấy thông tin mới nhất của task)
    const handleUpdateTaskName = (value, inputMethod) => {
       if (value === task?.taskName) return;
       const data = {
@@ -174,12 +164,6 @@ const TaskDetailModal = () => {
    };
 
    const handleAddUser = (item, selectMethod) => {
-      // projectAPI.addUserToTask({   // API bị lỗi không tìm thấy tài nguyên
-      //     taskId: task.taskId,
-      //     userId: item.userId,
-      // projectId: selectedProject.id // Thêm field projectId thì thành công, nhưng data trả về ko có user
-      // })
-      // Dùng API updateTask thay thế
       projectAPI
          .updateTask({
             ...task,

@@ -1,5 +1,21 @@
 import { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
+import { DragDropContext } from "react-beautiful-dnd";
+import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
+import GroupRemoveOutlinedIcon from "@mui/icons-material/GroupRemoveOutlined";
+import AddIcon from "@mui/icons-material/Add";
+import classnames from "classnames/bind";
+
+import SearchBar from "../../components/SearchBar";
+import Button from "../../components/Button";
+import MenuSelect from "../../components/MenuSelect";
+import TaskList from "./TaskList";
+import TaskDetailModal from "./TaskDetailModal";
+import TaskNewModal from "./TaskNewModal";
+import projectOwnerImg from "../../assets/images/meow.png";
 
 import useRequest from "../../hooks/useRequest";
 import anothersAPI from "../../services/anothersAPI";
@@ -7,25 +23,7 @@ import userAPI from "../../services/userAPI";
 import projectAPI from "../../services/projectAPI";
 import { getProjectDetail, reOrderTask } from "../../redux/slices/projectSlice";
 
-import projectOwnerImg from "../../assets/images/avatar-gau-cute.jpg";
-import SearchBar from "../../components/SearchBar";
-import Button from "../../components/Button";
-import MenuSelect from "../../components/MenuSelect";
-
-import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
-import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
-import GroupRemoveOutlinedIcon from "@mui/icons-material/GroupRemoveOutlined";
-import AddIcon from "@mui/icons-material/Add";
-
-import { DragDropContext } from "react-beautiful-dnd";
-
-import classnames from "classnames/bind";
 import styles from "./KanbanBoard.module.scss";
-import TaskList from "./TaskList";
-import TaskDetailModal from "./TaskDetailModal";
-import TaskNewModal from "./TaskNewModal";
-import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
 const cx = classnames.bind(styles);
 
 const StyledTooltip = ({ ...passProp }) => (
@@ -47,8 +45,7 @@ const KanbanBoard = () => {
    const { projectId } = useParams();
    const { selectedProject } = useSelector((state) => state.project);
    const { users } = useSelector((state) => state.user);
-   // const [filterByUserId, setFilterByUserId] = userState([])
-   // const listTask =
+
    const getStatus = useRequest(anothersAPI.getTaskStatus);
    const TaskNewModalRef = useRef();
 
@@ -118,7 +115,7 @@ const KanbanBoard = () => {
             </div>
             <div className={cx("creatorAvatar")}>
                <StyledTooltip
-                  title={selectedProject?.creator.name + " 🔱 (Project owner)"}
+                  title={selectedProject?.creator.name + " ✨ (Project owner)"}
                   arrow
                   enterDelay={200}
                >
@@ -147,7 +144,7 @@ const KanbanBoard = () => {
                            ? "✅"
                            : null}
                         {item.userId === selectedProject?.creator.id
-                           ? " 🔱 "
+                           ? " ✨ "
                            : null}
                      </div>
                   )}
@@ -177,7 +174,7 @@ const KanbanBoard = () => {
                         />
                         <span>{item.name}</span>
                         {item.userId === selectedProject?.creator.id
-                           ? " 🔱 "
+                           ? " ✨ "
                            : null}
                         <div className={cx("removeUserBtn")}>
                            <button
@@ -190,7 +187,6 @@ const KanbanBoard = () => {
                         </div>
                      </div>
                   )}
-                  // onChange={handleAddUser}
                   hideOnSelect={false}
                   getSearchKey={(item) => item.name}
                   getItemsKey={(item) => item.userId}
@@ -220,7 +216,6 @@ const KanbanBoard = () => {
                      <StyledTooltip
                         key={item.userId}
                         title={item.name}
-                        // arrow
                         enterDelay={200}
                      >
                         <Avatar

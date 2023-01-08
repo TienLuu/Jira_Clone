@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import { memo, useState } from "react";
-
 import { DataGrid } from "@mui/x-data-grid";
-import styles from "./TableData.module.scss";
+
 import CustomNoRowsOverlay from "./CustomNoRowsOverlay";
 import CustomLoadingOverlay from "./CustomLoadingOverlay";
 import CustomErrorOverLay from "./CustomErrorOverLay";
+
+import styles from "./TableData.module.scss";
 
 const TableData = ({ rows, columns, autoRowHeight, ...passProps }) => {
    const [pageSize, setPageSize] = useState(10);

@@ -1,5 +1,5 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+
 import Button from "../../components/Button";
 import styles from "./Page404.module.scss";
 import astronaut from "../../assets/images/astronaut.png";

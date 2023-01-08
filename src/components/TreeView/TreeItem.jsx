@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Link, useHref } from "react-router-dom";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import Collapse from "@mui/material/Collapse";
 import classnames from "classnames/bind";
 
-import Collapse from "@mui/material/Collapse";
-import styles from "./Tree.module.scss";
 import TreeView from "./TreeView";
+
+import styles from "./Tree.module.scss";
 const cx = classnames.bind(styles);
 
 const TreeItem = ({ node, indicator }) => {

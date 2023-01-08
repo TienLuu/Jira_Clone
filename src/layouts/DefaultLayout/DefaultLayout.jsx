@@ -2,8 +2,9 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import classnames from "classnames/bind";
 
-import styles from "./DefaultLayout.module.scss";
 import Header from "../components/Header/Header";
+
+import styles from "./DefaultLayout.module.scss";
 const cx = classnames.bind(styles);
 
 const DefaultLayout = () => {

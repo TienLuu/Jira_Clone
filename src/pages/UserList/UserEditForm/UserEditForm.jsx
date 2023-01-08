@@ -1,6 +1,7 @@
 import React from "react";
-import styles from "./UserEditForm.module.scss";
 import classnames from "classnames/bind";
+
+import styles from "./UserEditForm.module.scss";
 const cx = classnames.bind(styles);
 
 const UserEditForm = () => {

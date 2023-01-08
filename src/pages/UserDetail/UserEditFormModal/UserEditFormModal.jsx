@@ -147,6 +147,7 @@ const UserEditFormModal = ({ open, onClose }) => {
                <Grid xs={12} sm={6}>
                   <TextField
                      label="Password"
+                     type="password"
                      {...register("password", {
                         required: {
                            value: true,

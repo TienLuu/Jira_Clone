@@ -1,30 +1,27 @@
 import { useEffect } from "react";
-import classnames from "classnames/bind";
 import { useDispatch, useSelector } from "react-redux";
-
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
+import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import classnames from "classnames/bind";
 
-import styles from "./ProjectList.module.scss";
 import MenuSelect from "../../components/MenuSelect";
 import MoreMenu from "../../components/MoreMenu";
 import SearchBar from "../../components/SearchBar";
 import TableData from "../../components/TableData";
 import ProjectForm from "../component/NewProjectForm";
 
-import Avatar from "@mui/material/Avatar";
-import AvatarGroup from "@mui/material/AvatarGroup";
-
-import DeleteOutline from "@mui/icons-material/DeleteOutline";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
-import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
-import Tooltip from "@mui/material/Tooltip";
-
 import { getProjects } from "../../redux/slices/projectSlice";
 import useRequest from "../../hooks/useRequest";
 import projectAPI from "../../services/projectAPI";
-import { toast } from "react-toastify";
 
+import styles from "./ProjectList.module.scss";
 const cx = classnames.bind(styles);
 
 const StyledTooltip = ({ ...passProp }) => (
@@ -54,7 +51,6 @@ const ProjectList = () => {
    const searchValue = searchParams.get("keyword") || "";
 
    useEffect(() => {
-      // if (projects) return
       dispatch(getProjects(searchValue));
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
@@ -62,8 +58,6 @@ const ProjectList = () => {
    const handleSearchParams = (debounceValue) => {
       dispatch(getProjects(debounceValue));
 
-      // kiểm tra xem nếu input có giá trị thì mới set query params,
-      //  nếu không có input value thì xóa qrery params
       if (!debounceValue) {
          setSearchParams();
          return;

@@ -69,6 +69,7 @@ const Register = () => {
                />
                <TextField
                   label="Password"
+                  type="password"
                   {...register("password", {
                      required: {
                         value: true,

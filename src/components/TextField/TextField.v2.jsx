@@ -7,10 +7,10 @@ import {
    useImperativeHandle,
 } from "react";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import classNames from "classnames/bind";
 
 import useUpdateValue from "../../hooks/useUpdateValue";
 
-import classNames from "classnames/bind";
 import styles from "./TextField.module.scss";
 const cx = classNames.bind(styles);
 
@@ -45,7 +45,6 @@ const TextField = forwardRef(
 
       useEffect(() => {
          if (!autoHeight) return;
-         // Xử lý textarea có thể autoheight mà không bị scroll dọc
 
          const localRef = myRef.current;
          localRef.addEventListener("input", autoResize);
@@ -79,10 +78,8 @@ const TextField = forwardRef(
 
       const handleOnChange = (evt) => {
          setInputValue(evt.target.value);
-         console.log(evt.target.value);
 
          setTimeout(() => {
-            // giúp cho method getValue luôn lấy được giá trị mới nhất
             onChange(evt.target.value, inputMethod);
          }, 0);
       };

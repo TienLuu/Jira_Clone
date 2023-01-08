@@ -1,12 +1,11 @@
 import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import { Avatar } from "@mui/material";
+import classnames from "classnames/bind";
 
 import { TextFieldV2 as TextField } from "../../../../components/TextField";
 import Button from "../../../../components/Button";
 
-import { Avatar } from "@mui/material";
-
-import classnames from "classnames/bind";
 import styles from "./CommentItem.module.scss";
 const cx = classnames.bind(styles);
 
@@ -25,8 +24,7 @@ const CommentItem = ({
 
    const handleOpenEdit = () => {
       setIsEditing(true);
-      // Do hạn chế mount nhiều textarea vào DOM nên mỗi lần setIsEditing , thì
-      // textarea mới mount vào DOM=> dùng setTimeOut để lấy node sau khi được mount
+
       setTimeout(() => {
          ref.current.getInputNode().focus?.();
       }, 0);

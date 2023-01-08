@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { Routes, Route, Navigate, useLocation, Outlet } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 import DefaultLayout from "./layouts/DefaultLayout";
 import ProjectLayout from "./layouts/ProjectLayout";
@@ -7,19 +9,15 @@ import ProjectLayout from "./layouts/ProjectLayout";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import Page404 from "./pages/Page404";
-
 import MyProjects from "./pages/MyProjects";
 import UserList from "./pages/UserList";
 import UserDetail from "./pages/UserDetail";
 import ProjectList from "./pages/ProjectList";
-
 import KanbanBoard from "./pages/KanbanBoard";
 import ProjectSetting from "./pages/ProjectSetting";
 import UnderDevelopment from "./pages/UnderDevelopment";
 
-import { useSelector, useDispatch } from "react-redux";
 import { logout, checkToken } from "./redux/slices/authSlice";
-import { toast } from "react-toastify";
 
 const ProtectRoute = ({ children }) => {
    const dispatch = useDispatch();
@@ -67,7 +65,6 @@ function App() {
             {/* Jira Home Page */}
             <Route index element={<UnderDevelopment />} />
 
-            {/*----------------------------- Protect Route -----------------------------------------*/}
             <Route
                element={
                   <ProtectRoute>
@@ -89,7 +86,6 @@ function App() {
             </Route>
          </Route>
 
-         {/*----------------------------- Protect Route -----------------------------------------*/}
          {/* Project Route */}
          <Route
             path="/jira/projects/:projectId"

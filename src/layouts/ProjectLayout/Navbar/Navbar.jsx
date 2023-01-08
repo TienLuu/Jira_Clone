@@ -1,16 +1,15 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import styles from "./Navbar.module.scss";
-import classnames from "classnames/bind";
-
+import { useSelector } from "react-redux";
 import Tippy from "@tippyjs/react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import ContactSupportOutlinedIcon from "@mui/icons-material/ContactSupportOutlined";
+import classnames from "classnames/bind";
 
 import { Avatar } from "../../../components/Avatar";
 import { JiraLogoWhite } from "../../../components/SVG";
-import { useSelector } from "react-redux";
+
+import styles from "./Navbar.module.scss";
 const cx = classnames.bind(styles);
 
 const Navbar = () => {
@@ -65,7 +64,6 @@ const Navbar = () => {
                </li>
             </ul>
          </div>
-         {/* <SubNavbar /> */}
       </div>
    );
 };

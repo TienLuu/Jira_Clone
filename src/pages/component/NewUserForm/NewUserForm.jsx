@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import classnames from "classnames/bind";
 
 import TextField from "../../../components/TextField";
 import Button from "../../../components/Button/Button";
 
-import classnames from "classnames/bind";
 import styles from "./NewUserForm.module.scss";
 const cx = classnames.bind(styles);
 
@@ -74,6 +74,7 @@ const NewUserForm = ({ onSubmit }) => {
                      />
                      <TextField
                         label="Password"
+                        type="password"
                         {...register("password", { required: true })}
                         error={errors.password ? "Password is required" : null}
                      />

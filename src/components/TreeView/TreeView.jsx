@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import { memo } from "react";
 import classnames from "classnames/bind";
-import styles from "./Tree.module.scss";
 
 import TreeItem from "./TreeItem";
+
+import styles from "./Tree.module.scss";
 const cx = classnames.bind(styles);
 
 const TreeView = ({ data = [], indicator = true, children }) => {

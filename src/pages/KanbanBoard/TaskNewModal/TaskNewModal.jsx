@@ -5,29 +5,27 @@ import React, {
    useImperativeHandle,
 } from "react";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import ClearIcon from "@mui/icons-material/Clear";
-
-import projectAPI from "../../../services/projectAPI";
-import anothersAPI from "../../../services/anothersAPI";
-
-import { getProjectDetail } from "../../../redux/slices/projectSlice";
-import { taskTypeMap, priorityMap } from "../dummyData";
+import classnames from "classnames/bind";
 
 import Button from "../../../components/Button";
 import MenuSelect from "../../../components/MenuSelect";
 import MyCkEditor from "../../../components/MyCkEditor";
 import { TextFieldV2 as TextField } from "../../../components/TextField";
-
-import classnames from "classnames/bind";
-import styles from "./TaskNewModal.module.scss";
-import MultiSelectUser from "./MultiSelectUser";
-import { useParams } from "react-router-dom";
 import TimeTracking from "../../component/TimeTracking/TimeTracking";
+import MultiSelectUser from "./MultiSelectUser";
+
+import projectAPI from "../../../services/projectAPI";
+import anothersAPI from "../../../services/anothersAPI";
+import { getProjectDetail } from "../../../redux/slices/projectSlice";
+import { taskTypeMap, priorityMap } from "../dummyData";
+import styles from "./TaskNewModal.module.scss";
+
 const cx = classnames.bind(styles);
 
 const TaskNewModal = forwardRef((_, ref) => {
@@ -35,10 +33,8 @@ const TaskNewModal = forwardRef((_, ref) => {
    const [isOpen, setIsOpen] = useState(false);
 
    const dispatch = useDispatch();
-   //dùng để xử lý UI
    const timeTrackingRef = useRef();
 
-   //Dùng để lấy form value
    const taskTypeRef = useRef();
    const taskPriorityRef = useRef();
    const taskNameRef = useRef();
@@ -63,6 +59,7 @@ const TaskNewModal = forwardRef((_, ref) => {
             listUserAsign: taskAssignmentRef.current
                .getValue()
                .map((item) => item.userId),
+
             taskName: taskNameRef.current.getValue(),
             description: descriptionRef.current.getData(),
             statusId: taskStatusRef.current.getValue()?.statusId,
@@ -75,6 +72,7 @@ const TaskNewModal = forwardRef((_, ref) => {
          };
 
          await projectAPI.createTask(data);
+
          toast.success("Create task success");
          dispatch(getProjectDetail(projectId));
          setIsOpen(false);

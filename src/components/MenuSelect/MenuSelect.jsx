@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
-
 import Tippy from "@tippyjs/react/headless";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import classnames from "classnames/bind";
 
 import Popper from "../Popper";
 
@@ -9,7 +9,6 @@ import useRequest from "../../hooks/useRequest";
 import useUpdateValue from "../../hooks/useUpdateValue";
 
 import styles from "./MenuSelect.module.scss";
-import classnames from "classnames/bind";
 const cx = classnames.bind(styles);
 
 const MenuSelect = forwardRef(
@@ -79,7 +78,6 @@ const MenuSelect = forwardRef(
 
       const handleSelect = (item) => {
          setTimeout(() => {
-            // giúp cho method getValue luôn lấy được giá trị mới nhất khi dùng với ref
             onChange(item, selectMethod);
          }, 0);
          if (!hideOnSelect) return;
@@ -91,7 +89,6 @@ const MenuSelect = forwardRef(
          setMaximum((prev) => prev + stepRender);
       };
 
-      // Trả ra các phương thức getValue, setValue khi dùng ref
       useImperativeHandle(ref, () => {
          return selectMethod;
       });

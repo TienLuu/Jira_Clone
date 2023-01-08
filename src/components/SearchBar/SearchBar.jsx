@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-
 import {
    useRef,
    useState,
@@ -7,12 +6,11 @@ import {
    useImperativeHandle,
    useEffect,
 } from "react";
-
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import SyncIcon from "@mui/icons-material/Sync";
 import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-
 import classNames from "classnames/bind";
+
 import styles from "./SearchBar.module.scss";
 const cx = classNames.bind(styles);
 

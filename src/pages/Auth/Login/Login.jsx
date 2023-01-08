@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, Navigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import FacebookIcon from "@mui/icons-material/Facebook";
 
 import { LeftBackGround, Logo, RightBackGround } from "../../../components/SVG";
@@ -75,6 +74,7 @@ const Login = () => {
                />
                <TextField
                   label="Password"
+                  type="password"
                   {...register("password", {
                      required: {
                         value: true,

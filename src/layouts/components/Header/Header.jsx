@@ -1,18 +1,16 @@
-import React from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { GitHub } from "@mui/icons-material";
+import classnames from "classnames/bind";
 
 import { JiraLogo } from "../../../components/SVG";
 import Button from "../../../components/Button";
 import MoreMenu from "../../../components/MoreMenu";
-
-import { GitHub } from "@mui/icons-material";
 import { Avatar } from "../../../components/Avatar";
 
 import { logout } from "../../../redux/slices/authSlice";
 
 import styles from "./Header.module.scss";
-import classnames from "classnames/bind";
-import { useSelector, useDispatch } from "react-redux";
 const cx = classnames.bind(styles);
 
 const Header = () => {
@@ -23,7 +21,6 @@ const Header = () => {
 
    const menuUser = [
       { title: "Profile", action: "get-profile" },
-      { title: "Setting" },
       { title: "Logout", action: "logout", seperate: true },
    ];
 
@@ -106,12 +103,9 @@ const Header = () => {
                   </div>
                </MoreMenu>
             ) : (
-               // Thêm fragment để react xem đây 2 là menu khác nhau và cần render lại từ đầu,
-               // => component nhận được mảng items được cập nhật mảng mới do bên trong component
-               // có state riêng để lưu mảng, nên truyền mảng mới vào component cũng không render dữ liệu theo mảng mới
                <>
                   <MoreMenu items={menuAuth} onChange={handleSelectOption}>
-                     <span>login/register</span>
+                     <span>Login/register</span>
                   </MoreMenu>
                </>
             )}

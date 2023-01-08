@@ -1,10 +1,10 @@
 import { useImperativeHandle, forwardRef } from "react";
 import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
 import LinearProgress from "@mui/material/LinearProgress";
-
 import classNames from "classnames/bind";
-import styles from "./TimeTracking.module.scss";
+
 import useUpdateValue from "../../../hooks/useUpdateValue";
+import styles from "./TimeTracking.module.scss";
 const cx = classNames.bind(styles);
 
 const TimeTracking = forwardRef(
@@ -19,7 +19,9 @@ const TimeTracking = forwardRef(
          setTimeSpending,
          setTimeRemaining,
       };
+
       useImperativeHandle(ref, () => timeTrackingMethod);
+
       return (
          <div className={cx("timeTrackingWrapper")}>
             {label ? <label htmlFor="">Time Tracking</label> : null}

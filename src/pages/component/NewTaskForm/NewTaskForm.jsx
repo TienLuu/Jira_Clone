@@ -1,21 +1,19 @@
 import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { Avatar } from "@mui/material";
+import classnames from "classnames/bind";
 
 import TextField from "../../../components/TextField";
 import Button from "../../../components/Button/Button";
 import MyCkEditor from "../../../components/MyCkEditor/MyCkEditor";
 import MenuSelect from "../../../components/MenuSelect";
 
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { Avatar } from "@mui/material";
-
 import anothersAPI from "../../../services/anothersAPI";
 import { taskTypeMap, priorityMap } from "../../KanbanBoard/dummyData";
-
-import classnames from "classnames/bind";
 import styles from "./ProjectForm.module.scss";
-import { useSelector } from "react-redux";
 const cx = classnames.bind(styles);
 
 const ProjectForm = ({ onSubmit }) => {
@@ -82,7 +80,6 @@ const ProjectForm = ({ onSubmit }) => {
                         )}
                         getSearchKey={(item) => item.projectName}
                         getItemsKey={(item) => item.id}
-                        // onChange={handleChangeStatus}
                         selectPlaceHolder={"Select Project"}
                         arrow
                      />
@@ -118,25 +115,11 @@ const ProjectForm = ({ onSubmit }) => {
                         getSearchKey={(item) => item.description}
                         getItemsKey={(item) => item.priorityId}
                         selectPlaceHolder={"Select Status"}
-                        // onChange={handleChangePriority}
                      />
                   </div>
                   <div className={cx("group")}>
                      <div className={cx("memberWrapper")}>
-                        {/* {task?.assigness.map(item => (
-                                    <div className={cx('member')} key={item.id}>
-                                        <Avatar src={item.avatar} sx={{ width: 24, height: 24 }} />
-                                        <span>{item.name}</span>
-                                        <button
-                                            className={cx('removeMemberBtn')}
-                                            onClick={() => handleRemoveUser(item.id)}
-                                        >
-                                            <ClearIcon fontSize='inherit' color='inherit' />
-                                        </button>
-                                    </div>
-                                ))} */}
                         <MenuSelect
-                           // onChange={handleAddUser}
                            renderItem={(item) => (
                               <div className={cx("assignment")}>
                                  <Avatar
@@ -170,30 +153,17 @@ const ProjectForm = ({ onSubmit }) => {
                         )}
                         getSearchKey={(item) => item.statusName}
                         getItemsKey={(item) => item.statusId}
-                        // onChange={handleChangeStatus}
                         selectPlaceHolder={"Select Status"}
                         arrow
                      />
                   </div>
                   <div className={cx("group")}>
-                     <TextField
-                        variant="trello"
-                        // onBlur={handleChangeEstimate}
-                     />
-                     <TextField
-                        variant="trello"
-                        // onBlur={handleChangeEstimate}
-                     />
+                     <TextField variant="trello" />
+                     <TextField variant="trello" />
                   </div>
                   <div className={cx("group")}>
-                     <TextField
-                        variant="trello"
-                        // onBlur={handleChangeEstimate}
-                     />
-                     <TextField
-                        variant="trello"
-                        // onBlur={handleChangeEstimate}
-                     />
+                     <TextField variant="trello" />
+                     <TextField variant="trello" />
                   </div>
 
                   <MyCkEditor label="Description" editorRef={editorRef} />

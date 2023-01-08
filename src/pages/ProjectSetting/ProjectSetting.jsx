@@ -1,11 +1,15 @@
 import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import classnames from "classnames/bind";
 
 import MoreMenu from "../../components/MoreMenu";
 import TextField from "../../components/TextField";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import Button from "../../components/Button/Button";
+import MyCkEditor from "../../components/MyCkEditor/MyCkEditor";
+import MenuSelect from "../../components/MenuSelect";
 
 import { getProjectDetail } from "../../redux/slices/projectSlice";
 import useRequest from "../../hooks/useRequest";
@@ -13,10 +17,6 @@ import anothersAPI from "../../services/anothersAPI";
 import projectAPI from "../../services/projectAPI";
 
 import styles from "./ProjectSetting.module.scss";
-import Button from "../../components/Button/Button";
-import { toast } from "react-toastify";
-import MyCkEditor from "../../components/MyCkEditor/MyCkEditor";
-import MenuSelect from "../../components/MenuSelect";
 const cx = classnames.bind(styles);
 
 const ProjectSetting = () => {
@@ -37,7 +37,6 @@ const ProjectSetting = () => {
       },
    });
 
-   // Dùng để lưu lại editor instance sau khi editor được khởi tạo
    const editorRef = useRef();
    const selectRef = useRef();
 
