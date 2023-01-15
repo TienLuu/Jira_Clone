@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -22,6 +23,7 @@ import { toggleTaskModal, getTaskById } from "../../../slices/taskSlice";
 import { getProjectDetail } from "../../../slices/projectSlice";
 import { IssuePriorityCopy, IssueTypeCopy } from "../../../constants/issues";
 import { showSuccess, showError } from "../../../utils/toast";
+import { copyUrl } from "../../../utils/helper";
 
 import {
    Assignment,
@@ -47,7 +49,6 @@ import {
    ButtonRemove,
    FormGroup,
 } from "./Styles";
-import { useParams } from "react-router-dom";
 
 const TaskDetailModal = () => {
    const { projectId } = useParams();
@@ -255,6 +256,10 @@ const TaskDetailModal = () => {
          });
    };
 
+   const hanldeCopyUrl = () => {
+      copyUrl(window.location.href);
+   };
+
    return (
       <Dialog
          open={isTaskModalOpen}
@@ -292,7 +297,7 @@ const TaskDetailModal = () => {
                         <Icon type="feedback" size={14} />
                         <span>Give feedback</span>
                      </Button>
-                     <Button className="controlBtn">
+                     <Button className="controlBtn" onClick={hanldeCopyUrl}>
                         <Icon type="link" size={14} />
                         <span>Copy Link</span>
                      </Button>

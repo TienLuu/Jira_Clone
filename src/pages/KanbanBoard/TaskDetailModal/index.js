@@ -1,1 +1,1 @@
-export { default } from './TaskDetailModal'
+export { default } from "./TaskDetailModal";
