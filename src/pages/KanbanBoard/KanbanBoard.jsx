@@ -1,30 +1,40 @@
 import { useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
-import { DragDropContext } from "react-beautiful-dnd";
-import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { AvatarGroup, Tooltip } from "@mui/material";
+import { DragDropContext } from "react-beautiful-dnd";
+
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import GroupRemoveOutlinedIcon from "@mui/icons-material/GroupRemoveOutlined";
-import AddIcon from "@mui/icons-material/Add";
-import classnames from "classnames/bind";
-
-import SearchBar from "../../components/SearchBar";
-import Button from "../../components/Button";
-import MenuSelect from "../../components/MenuSelect";
-import TaskList from "./TaskList";
-import TaskDetailModal from "./TaskDetailModal";
-import TaskNewModal from "./TaskNewModal";
-import projectOwnerImg from "../../assets/images/meow.png";
 
 import useRequest from "../../hooks/useRequest";
 import anothersAPI from "../../services/anothersAPI";
-import userAPI from "../../services/userAPI";
 import projectAPI from "../../services/projectAPI";
-import { getProjectDetail, reOrderTask } from "../../redux/slices/projectSlice";
+import userAPI from "../../services/userAPI";
+import { getProjectDetail, reOrderTask } from "../../slices/projectSlice";
 
-import styles from "./KanbanBoard.module.scss";
-const cx = classnames.bind(styles);
+import SearchBar from "../../components/SearchBar";
+import Button from "../../components/Button";
+import Avatar from "../../components/Avatar";
+import MenuSelect from "../../components/MenuSelect";
+import TaskList from "./TaskList";
+import TaskDetailModal from "./TaskDetailModal";
+
+import { showError, showSuccess } from "../../utils/toast";
+import projectOwnerImg from "../../assets/images/meow.png";
+import {
+   GroupControl,
+   CreatorAvatar,
+   StyledSearchBar,
+   GroupAvatar,
+   ButtonControl,
+   StyledButtonUser,
+   MemberItem,
+   StyledButtonRemove,
+   StyledTitle,
+   StyledContent,
+   StatusColumn,
+} from "./Styles";
 
 const StyledTooltip = ({ ...passProp }) => (
    <Tooltip
@@ -32,7 +42,7 @@ const StyledTooltip = ({ ...passProp }) => (
       PopperProps={{
          sx: {
             "& .MuiTooltip-tooltip": {
-               fontSize: "1.2rem",
+               fontSize: "13px",
             },
          },
       }}
@@ -40,25 +50,27 @@ const StyledTooltip = ({ ...passProp }) => (
       {...passProp}
    />
 );
+
 const KanbanBoard = () => {
-   const dispatch = useDispatch();
-   const { projectId } = useParams();
    const { selectedProject } = useSelector((state) => state.project);
    const { users } = useSelector((state) => state.user);
+   const { projectId } = useParams();
+   const dispatch = useDispatch();
 
-   const getStatus = useRequest(anothersAPI.getTaskStatus);
-   const TaskNewModalRef = useRef();
+   const getIssueStatus = useRequest(anothersAPI.getTaskStatus);
+   const taskNewModalRef = useRef();
 
-   const handleAddUser = async (item, selectMethod) => {
+   const handleAddUser = async (item) => {
       try {
          await projectAPI.addUserToProject({
             userId: item.userId,
             projectId: projectId,
          });
-         toast.success("Invite peeple to the project success");
+
+         showSuccess("Invited member to the project success");
          dispatch(getProjectDetail(projectId));
       } catch (error) {
-         toast.error(error);
+         showError(error);
       }
    };
 
@@ -68,15 +80,12 @@ const KanbanBoard = () => {
             userId: item.userId,
             projectId: projectId,
          });
-         toast.success("Kich user out the project success");
+
+         showSuccess("Removed member out of the project success");
          dispatch(getProjectDetail(projectId));
       } catch (error) {
-         toast.error(error);
+         showError(error);
       }
-   };
-
-   const handleToggleModal = () => {
-      TaskNewModalRef.current.toggleModal(true);
    };
 
    const handleDropEnd = (result) => {
@@ -99,44 +108,38 @@ const KanbanBoard = () => {
             statusId: destination.droppableId,
          })
          .then(() => {
-            toast.success("Update success");
+            showSuccess("Update success");
          })
          .catch((error) => {
-            toast.error(error);
+            showError(error);
             dispatch(getProjectDetail(projectId));
          });
    };
 
    return (
-      <div className={cx("wrapper")}>
-         <div className={cx("filter")}>
-            <div className={cx("search")}>
+      <div>
+         <StyledTitle>
+            <h2>Kanban Board</h2>
+         </StyledTitle>
+         <GroupControl>
+            <StyledSearchBar>
                <SearchBar />
-            </div>
-            <div className={cx("creatorAvatar")}>
-               <StyledTooltip
-                  title={selectedProject?.creator.name + " ✨ (Project owner)"}
-                  arrow
-                  enterDelay={200}
-               >
-                  <Avatar
-                     className={cx("memberAvatar")}
-                     src={projectOwnerImg}
-                     alt={selectedProject?.creator.name}
-                  />
-               </StyledTooltip>
-            </div>
-            <div className={cx("groupAvatar")}>
+            </StyledSearchBar>
+            <CreatorAvatar>
+               <Avatar
+                  className="memberAvatar"
+                  avatarUrl={projectOwnerImg}
+                  alt={selectedProject?.creator.name + " ✨"}
+               />
+            </CreatorAvatar>
+            <GroupAvatar>
                <MenuSelect
                   items={users || []}
                   maxRender={5}
                   serviceAPI={userAPI.getUsers}
                   renderItem={(item) => (
-                     <div className={cx("memberItem")}>
-                        <Avatar
-                           src={item.avatar}
-                           sx={{ width: 24, height: 24 }}
-                        />
+                     <MemberItem key={item.userId}>
+                        <Avatar avatarUrl={item.avatar} size={24} />
                         <span>{item.name}</span>
                         {selectedProject?.members.find(
                            (member) => member.userId === item.userId
@@ -146,20 +149,17 @@ const KanbanBoard = () => {
                         {item.userId === selectedProject?.creator.id
                            ? " ✨ "
                            : null}
-                     </div>
+                     </MemberItem>
                   )}
                   onChange={handleAddUser}
                   getSearchKey={(item) => item.name}
                   getItemsKey={(item) => item.userId}
-                  rootClass={cx("manageUserBtnWrapper")}
+                  rootClass="manageUserBtn"
                   defaultPlaceHolder={
-                     <StyledTooltip title="Add people">
-                        <button className={cx("manageUserBtn")}>
-                           <PersonAddAltOutlinedIcon
-                              fontSize="inherit"
-                              color="inherit"
-                           />
-                        </button>
+                     <StyledTooltip title="Add member">
+                        <StyledButtonUser>
+                           <PersonAddAltOutlinedIcon />
+                        </StyledButtonUser>
                      </StyledTooltip>
                   }
                />
@@ -167,38 +167,33 @@ const KanbanBoard = () => {
                   items={selectedProject?.members || []}
                   maxRender={5}
                   renderItem={(item) => (
-                     <div className={cx("memberItem")}>
-                        <Avatar
-                           src={item.avatar}
-                           sx={{ width: 24, height: 24 }}
-                        />
+                     <MemberItem key={item.userId}>
+                        <Avatar avatarUrl={item.avatar} size={24} />
                         <span>{item.name}</span>
                         {item.userId === selectedProject?.creator.id
                            ? " ✨ "
                            : null}
-                        <div className={cx("removeUserBtn")}>
-                           <button
+                        <StyledButtonRemove>
+                           <Button
+                              variant="danger"
+                              iconSize={16}
+                              icon="close"
                               onClick={() => {
                                  handleRemoveUser(item);
                               }}
-                           >
-                              X
-                           </button>
-                        </div>
-                     </div>
+                           ></Button>
+                        </StyledButtonRemove>
+                     </MemberItem>
                   )}
                   hideOnSelect={false}
                   getSearchKey={(item) => item.name}
                   getItemsKey={(item) => item.userId}
-                  rootClass={cx("manageUserBtnWrapper")}
+                  rootClass="manageUserBtn"
                   defaultPlaceHolder={
-                     <StyledTooltip title="Remove people">
-                        <button className={cx("manageUserBtn")}>
-                           <GroupRemoveOutlinedIcon
-                              fontSize="inherit"
-                              color="inherit"
-                           />
-                        </button>
+                     <StyledTooltip title="Remove member">
+                        <StyledButtonUser>
+                           <GroupRemoveOutlinedIcon />
+                        </StyledButtonUser>
                      </StyledTooltip>
                   }
                />
@@ -206,60 +201,44 @@ const KanbanBoard = () => {
                   total={selectedProject?.members.length}
                   sx={{
                      "& .MuiAvatar-root": {
-                        width: 36,
-                        height: 36,
-                        fontSize: 15,
+                        width: 30,
+                        height: 30,
+                        fontSize: 14,
                      },
                   }}
+                  className="styledGroup"
                >
                   {selectedProject?.members.map((item) => (
-                     <StyledTooltip
+                     <Avatar
+                        className="memberAvatar"
+                        avatarUrl={item.avatar}
+                        alt={item.name}
                         key={item.userId}
-                        title={item.name}
-                        enterDelay={200}
-                     >
-                        <Avatar
-                           className={cx("memberAvatar")}
-                           src={item.avatar}
-                           alt={item.name}
-                        />
-                     </StyledTooltip>
+                     />
                   ))}
                </AvatarGroup>
-            </div>
-            <div className={cx("controlBtn")}>
-               <Button solid small>
-                  Only My Issues
-               </Button>
-               <Button solid small>
-                  Recently Update
-               </Button>
-            </div>
-         </div>
+            </GroupAvatar>
+            <ButtonControl>
+               <Button className="hightlight">Only My Issues</Button>
+               <Button className="hightlight">Recently Update</Button>
+            </ButtonControl>
+         </GroupControl>
          <DragDropContext onDragEnd={handleDropEnd}>
-            <div className={cx("content")}>
-               {getStatus.data?.map((status) => (
-                  <div key={status.statusId} className={cx("statusColumn")}>
+            <StyledContent>
+               {getIssueStatus.data?.map((status) => (
+                  <StatusColumn key={status.statusId}>
                      <h3>{status.statusName}</h3>
-                     <div className={cx("tasksContainer")}>
+                     <div>
                         <TaskList
                            taskList={selectedProject?.lstTask[status.statusId]}
-                           taskNewModalRef={TaskNewModalRef}
+                           taskNewModalRef={taskNewModalRef}
                         />
-                        <div
-                           className={cx("createTaskBtn")}
-                           onClick={handleToggleModal}
-                        >
-                           <AddIcon className={cx("addIcon")} />
-                           <span>Create issue</span>
-                        </div>
                      </div>
-                  </div>
+                  </StatusColumn>
                ))}
-            </div>
+            </StyledContent>
          </DragDropContext>
          <TaskDetailModal />
-         <TaskNewModal ref={TaskNewModalRef} />
       </div>
    );
 };

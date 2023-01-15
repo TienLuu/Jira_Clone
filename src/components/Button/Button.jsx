@@ -1,84 +1,93 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import classnames from "classnames/bind";
+import { forwardRef } from "react";
 
-import styles from "./Button.module.scss";
-const cx = classnames.bind(styles);
+import Icon from "../Icon";
+import { color } from "../../utils/styles";
+import { StyledButton, StyledSpinner, Text } from "./Styles";
 
-const Button = ({
-   href,
-   to,
-   disable,
-   children,
-   className,
-   primary,
-   fullWidth,
-   large,
-   small,
-   solid,
-   outline,
-   round,
-   rightIcon,
-   leftIcon,
-   ...passProps
-}) => {
-   let RootType = "button";
-
-   if (href) {
-      RootType = "a";
-      passProps.href = href;
-   }
-
-   if (to) {
-      RootType = Link;
-      passProps.to = to;
-   }
-
-   if (disable) {
-      Object.keys(passProps).forEach((prop) => {
-         if (prop.startsWith("on")) {
-            delete passProps[prop];
-         }
-      });
-   }
-
-   const customClass = cx("wrapper", {
-      [className]: className,
-      primary,
-      small,
-      large,
-      fullWidth,
-      solid,
-      outline,
-      round,
-      disable,
-   });
-
-   return (
-      <RootType {...passProps} className={customClass}>
-         {leftIcon && <span className={styles.icon}>{leftIcon}</span>}
-         {children}
-         {rightIcon && <span className={styles.icon}>{rightIcon}</span>}
-         <span className={styles.ripple}></span>
-      </RootType>
-   );
-};
-
-Button.propTypes = {
-   href: PropTypes.string,
-   to: PropTypes.string,
-   disable: PropTypes.bool,
-   children: PropTypes.node.isRequired,
+const propTypes = {
    className: PropTypes.string,
-   primary: PropTypes.bool,
-   fullWidth: PropTypes.bool,
-   large: PropTypes.bool,
-   small: PropTypes.bool,
-   solid: PropTypes.bool,
-   outline: PropTypes.bool,
-   round: PropTypes.bool,
-   rightIcon: PropTypes.node,
-   leftIcon: PropTypes.node,
+   children: PropTypes.node,
+   variant: PropTypes.oneOf([
+      "primary",
+      "success",
+      "danger",
+      "secondary",
+      "empty",
+   ]),
+   icon: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+   iconSize: PropTypes.number,
+   disabled: PropTypes.bool,
+   isWorking: PropTypes.bool,
+   onClick: PropTypes.func,
 };
+
+const defaultProps = {
+   className: undefined,
+   children: undefined,
+   variant: "secondary",
+   icon: undefined,
+   iconSize: 18,
+   disabled: false,
+   isWorking: false,
+   onClick: () => {},
+};
+
+const Button = forwardRef(
+   (
+      {
+         children,
+         variant,
+         icon,
+         iconSize,
+         disabled,
+         isWorking,
+         onClick,
+         ...buttonProps
+      },
+      ref
+   ) => {
+      const handleClick = () => {
+         if (!disabled && !isWorking) {
+            onClick();
+         }
+      };
+
+      return (
+         <StyledButton
+            {...buttonProps}
+            onClick={handleClick}
+            variant={variant}
+            disabled={disabled || isWorking}
+            isWorking={isWorking}
+            iconOnly={!children}
+            ref={ref}
+         >
+            {isWorking && (
+               <StyledSpinner size={26} color={getIconColor(variant)} />
+            )}
+
+            {!isWorking && icon && typeof icon === "string" ? (
+               <Icon
+                  type={icon}
+                  size={iconSize}
+                  color={getIconColor(variant)}
+               />
+            ) : (
+               icon
+            )}
+            {children && (
+               <Text withPadding={isWorking || icon}>{children}</Text>
+            )}
+         </StyledButton>
+      );
+   }
+);
+
+const getIconColor = (variant) =>
+   ["secondary", "empty"].includes(variant) ? color.textDark : "#fff";
+
+Button.propTypes = propTypes;
+Button.defaultProps = defaultProps;
 
 export default Button;

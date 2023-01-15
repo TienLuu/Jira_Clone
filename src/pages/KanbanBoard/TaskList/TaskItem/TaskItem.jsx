@@ -1,24 +1,31 @@
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Draggable } from "react-beautiful-dnd";
-import { toast } from "react-toastify";
-import { Avatar, AvatarGroup, Tooltip } from "@mui/material";
-import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
-import classnames from "classnames/bind";
+import { AvatarGroup } from "@mui/material";
 
 import MoreMenu from "../../../../components/MoreMenu";
+import Avatar from "../../../../components/Avatar";
+import Button from "../../../../components/Button";
+import Icon from "../../../../components/Icon";
+import PathToolTip from "../../../../components/PathToolTip";
+import IssuePriorityIcon from "../../../../components/IssuePriorityIcon/IssuePriorityIcon";
+import IssueTypeIcon from "../../../../components/IssueTypeIcon/IssueTypeIcon";
+
+import { getTaskById, toggleTaskModal } from "../../../../slices/taskSlice";
+import { getProjectDetail } from "../../../../slices/projectSlice";
+import projectAPI from "../../../../services/projectAPI";
+import { IssueTypeCopy, IssuePriorityCopy } from "../../../../constants/issues";
+import { showError, showSuccess } from "../../../../utils/toast";
 
 import {
-   getTaskById,
-   toggleTaskModal,
-} from "../../../../redux/slices/taskSlice";
-import { getProjectDetail } from "../../../../redux/slices/projectSlice";
-import projectAPI from "../../../../services/projectAPI";
-import { taskTypeMap, priorityMap } from "../../dummyData";
-
-import styles from "./TaskItem.module.scss";
-
-const cx = classnames.bind(styles);
+   StyledButton,
+   StyledTitle,
+   StyledTaskItem,
+   TaskInfo,
+   MemberAvatar,
+   TaskProperty,
+   Title,
+} from "./Styles";
 
 const itemsMenu = [
    {
@@ -30,6 +37,7 @@ const itemsMenu = [
 const TaskItem = ({ task, index }) => {
    const { projectId } = useParams();
    const dispatch = useDispatch();
+
    const handleSelectTask = () => {
       dispatch(toggleTaskModal(true));
       dispatch(getTaskById(task.taskId));
@@ -38,10 +46,11 @@ const TaskItem = ({ task, index }) => {
    const handleDeleteTask = async () => {
       try {
          await projectAPI.deleteTask(task.taskId);
-         toast.success("Delete task success");
+
+         showSuccess("Delete task success");
          dispatch(getProjectDetail(projectId));
       } catch (error) {
-         toast.error(error);
+         showError(error);
       }
    };
 
@@ -54,97 +63,74 @@ const TaskItem = ({ task, index }) => {
    return (
       <Draggable draggableId={task.taskId.toString()} index={index}>
          {(provider, snapshot) => (
-            <li
+            <StyledTaskItem
                {...provider.draggableProps}
                {...provider.dragHandleProps}
                ref={provider.innerRef}
-               className={cx("taskItem", { dragging: snapshot.isDragging })}
                onClick={handleSelectTask}
             >
-               <div className={cx("title")}>
-                  <h4>{task.taskName}</h4>
+               <StyledTitle>
+                  <Title>{task.taskName}</Title>
                   <MoreMenu
+                     rootActiveClass="taskMenuActive"
                      items={itemsMenu}
                      placement="bottom-end"
                      appendTo={() => document.body}
-                     rootActiveClass={cx("taskMenuActive")}
                      onChange={handleSelectMenu}
                   >
-                     <button className={cx("taskActionBtn")}>
-                        <MoreHorizOutlinedIcon
-                           fontSize="inherit"
-                           color="inherit"
-                        />
-                     </button>
+                     <StyledButton className="taskActionBtn">
+                        <Button className="taskActionBtn">
+                           <Icon type="more" />
+                        </Button>
+                     </StyledButton>
                   </MoreMenu>
-               </div>
-               <div className={cx("taskInfo")}>
-                  <div className={cx("left")}>
+               </StyledTitle>
+               <TaskInfo>
+                  <TaskProperty>
+                     <PathToolTip
+                        title={IssueTypeCopy[task.taskTypeDetail.taskType]}
+                        arrow
+                     >
+                        <IssueTypeIcon
+                           type={`${task.taskTypeDetail.taskType}`}
+                        />
+                     </PathToolTip>
+
+                     <PathToolTip
+                        title={IssuePriorityCopy[task.priorityTask.priorityId]}
+                        arrow
+                     >
+                        <IssuePriorityIcon
+                           priority={`${task.priorityTask.priorityId}`}
+                        />
+                     </PathToolTip>
+                  </TaskProperty>
+                  <MemberAvatar>
                      <AvatarGroup
                         max={4}
                         total={task.assigness.length}
                         sx={{
                            "& .MuiAvatar-root": {
-                              width: 24,
-                              height: 24,
-                              fontSize: 15,
+                              width: 20,
+                              height: 20,
+                              fontSize: 12,
                            },
                         }}
+                        className="styledGroup"
                      >
                         {task.assigness.map((item) => (
-                           <Tooltip
-                              key={item.id}
-                              title={item.name}
-                              arrow
-                              PopperProps={{
-                                 sx: {
-                                    "& .MuiTooltip-tooltip": {
-                                       fontSize: "1rem",
-                                    },
-                                 },
-                              }}
-                           >
-                              <Avatar src={item.avatar} alt={item.name} />
-                           </Tooltip>
+                           <Avatar
+                              className="memberAvatar"
+                              avatarUrl={item.avatar}
+                              alt={item.name}
+                              size={24}
+                              key={item.name}
+                           />
                         ))}
                      </AvatarGroup>
-                  </div>
-                  <div className={cx("right")}>
-                     <div className={cx("taskType")}>
-                        <Tooltip
-                           title={taskTypeMap[task.taskTypeDetail.id].name}
-                           arrow
-                           PopperProps={{
-                              sx: {
-                                 "& .MuiTooltip-tooltip": {
-                                    fontSize: "1rem",
-                                 },
-                              },
-                           }}
-                        >
-                           {taskTypeMap[task.taskTypeDetail.id].icon}
-                        </Tooltip>
-                     </div>
-                     <div className={cx("taskPriority")}>
-                        <Tooltip
-                           title={
-                              priorityMap[task.priorityTask.priorityId].name
-                           }
-                           arrow
-                           PopperProps={{
-                              sx: {
-                                 "& .MuiTooltip-tooltip": {
-                                    fontSize: "1rem",
-                                 },
-                              },
-                           }}
-                        >
-                           {priorityMap[task.priorityTask.priorityId].icon}
-                        </Tooltip>
-                     </div>
-                  </div>
-               </div>
-            </li>
+                  </MemberAvatar>
+               </TaskInfo>
+            </StyledTaskItem>
          )}
       </Draggable>
    );

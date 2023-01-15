@@ -1,17 +1,19 @@
 import fetcher from "./fetcher";
 
 const userAPI = {
-   signup: (values) => {
-      return fetcher.post("/Users/signup", values);
+   getUsers: (keyword) => {
+      return fetcher.get("Users/getUser", {
+         params: {
+            keyword: keyword,
+         },
+      });
    },
 
-   signin: (values) => {
-      return fetcher.post("/Users/signin", values);
-   },
-
-   facebookLogin: (facebookToken) => {
-      return fetcher.post("/Userss/facebooklogin", {
-         facebookToken,
+   getUserByProjectId: (projectId) => {
+      return fetcher.get("Users/getUserByProjectId", {
+         params: {
+            idProject: projectId,
+         },
       });
    },
 
@@ -19,33 +21,12 @@ const userAPI = {
       return fetcher.put("/Users/editUser", values);
    },
 
-   deleteUser: (id) => {
-      return fetcher.delete("/Users/deleteUser", {
+   deleteUser: (userId) => {
+      return fetcher.delete("Users/deleteUser", {
          params: {
-            id,
+            id: userId,
          },
       });
-   },
-
-   getUsers: (keyword) => {
-      if (!keyword) keyword = null;
-      return fetcher("/Users/getUser", {
-         params: {
-            keyword,
-         },
-      });
-   },
-
-   getUserByProjectId: (idProject) => {
-      return fetcher("/Users/getUserByProjectId", {
-         params: {
-            idProject,
-         },
-      });
-   },
-
-   tesToken: () => {
-      return fetcher.post("/Users/TestToken");
    },
 };
 

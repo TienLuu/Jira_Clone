@@ -1,29 +1,36 @@
 import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import classnames from "classnames/bind";
 
 import MoreMenu from "../../components/MoreMenu";
 import TextField from "../../components/TextField";
-import Button from "../../components/Button/Button";
-import MyCkEditor from "../../components/MyCkEditor/MyCkEditor";
 import MenuSelect from "../../components/MenuSelect";
+import Editor from "../../components/Editor";
+import Button from "../../components/Button";
+import Icon from "../../components/Icon";
 
-import { getProjectDetail } from "../../redux/slices/projectSlice";
+import { getProjectDetail } from "../../slices/projectSlice";
 import useRequest from "../../hooks/useRequest";
-import anothersAPI from "../../services/anothersAPI";
 import projectAPI from "../../services/projectAPI";
+import anothersAPI from "../../services/anothersAPI";
 
-import styles from "./ProjectSetting.module.scss";
-const cx = classnames.bind(styles);
+import { showSuccess, showError } from "../../utils/toast";
+import {
+   Wrapper,
+   StyledTitle,
+   StyledForm,
+   OnlyReadField,
+   CategoryItem,
+} from "./Styles";
 
 const ProjectSetting = () => {
    const { selectedProject } = useSelector((state) => state.project);
    const dispatch = useDispatch();
+   const editorRef = useRef();
+   const selectRef = useRef();
 
    const updateProject = useRequest(projectAPI.updateProject, { manual: true });
+
    const {
       handleSubmit,
       register,
@@ -36,9 +43,6 @@ const ProjectSetting = () => {
          projectName: "",
       },
    });
-
-   const editorRef = useRef();
-   const selectRef = useRef();
 
    useEffect(() => {
       setValue("id", selectedProject?.id);
@@ -58,50 +62,59 @@ const ProjectSetting = () => {
 
       try {
          const data = await updateProject.runAsync(values.id, updateValues);
-         toast.success("Save change successful");
+
+         showSuccess("Save change successful");
          dispatch(getProjectDetail(data.id));
       } catch (error) {
-         toast.error(
-            typeof error === "string"
-               ? error
-               : "Request denied! Something went error"
-         );
+         showError(error);
       }
    };
 
    return (
-      <div className={cx("wrapper")}>
-         <div className={cx("title")}>
-            <h2>Detail</h2>
-            <MoreMenu items={[{ title: "Move to trash" }]}>
-               <MoreHorizIcon fontSize="inherit" color="inherit" />
+      <Wrapper>
+         <StyledTitle>
+            <h2>Project Details</h2>
+            <MoreMenu items={[{ title: "Do something..." }]}>
+               <Icon type="more" />
             </MoreMenu>
-         </div>
+         </StyledTitle>
          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className={cx("container")}>
-               <div className={cx("group")}>
+            <StyledForm>
+               <OnlyReadField>
                   <TextField
-                     variant="trello"
                      label="ID"
                      readOnly
                      disabled
-                     {...register("id", { required: true })}
-                     error={errors.id ? "ID is required" : null}
+                     {...register("id", {
+                        required: {
+                           value: true,
+                           message: "Project ID is required",
+                        },
+                     })}
+                     error={errors.id && errors.id.message}
                   />
                   <TextField
                      label="CreatorId"
-                     variant="trello"
                      disabled
                      readOnly
-                     {...register("creator", { required: true })}
-                     error={errors.creator ? "Creator ID is required" : null}
+                     {...register("creator", {
+                        required: {
+                           value: true,
+                           message: "Creator ID is required",
+                        },
+                     })}
+                     error={errors.creator && errors.creator.message}
                   />
-               </div>
+               </OnlyReadField>
                <TextField
                   label="Project Name"
-                  variant="trello"
-                  {...register("projectName", { required: true })}
-                  error={errors.projectName ? "Project Name is required" : null}
+                  {...register("projectName", {
+                     required: {
+                        value: true,
+                        message: "Project Name is required",
+                     },
+                  })}
+                  error={errors.projectName && errors.projectName.message}
                />
                <MenuSelect
                   value={selectedProject?.projectCategory}
@@ -109,27 +122,26 @@ const ProjectSetting = () => {
                   getItemsKey={(item) => item.id}
                   getSearchKey={(item) => item.projectCategoryName}
                   renderItem={(item) => (
-                     <div className={cx("categoryItem")}>
+                     <CategoryItem>
                         {item.projectCategoryName || item.name}
-                     </div>
+                     </CategoryItem>
                   )}
+                  arrow
                   label="Category"
                   selectPlaceHolder={
-                     <div className={cx("categoryItem")}>Select Category</div>
+                     <CategoryItem>Select Category</CategoryItem>
                   }
                   ref={selectRef}
                />
-               <MyCkEditor
+               <Editor
                   label="Description"
                   editorRef={editorRef}
                   data={selectedProject?.description}
                />
-               <Button solid className={cx("submitBtn")}>
-                  Save
-               </Button>
-            </div>
+            </StyledForm>
+            <Button variant="primary">Save</Button>
          </form>
-      </div>
+      </Wrapper>
    );
 };
 

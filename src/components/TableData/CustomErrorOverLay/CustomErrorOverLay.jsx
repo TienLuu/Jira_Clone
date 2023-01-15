@@ -1,11 +1,11 @@
-import styles from "./CustomErrorOverLay.module.scss";
+import { Wrapper } from "./Styles";
 
 const CustomErrorOverLay = () => {
    return (
-      <div className={styles.wrapper}>
+      <Wrapper>
          <h3>Oops... Something went error</h3>
          <p>please try again</p>
-      </div>
+      </Wrapper>
    );
 };
 

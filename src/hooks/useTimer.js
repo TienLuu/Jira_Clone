@@ -1,4 +1,9 @@
+import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+
+const propTypes = {
+   follwingDate: PropTypes.object,
+};
 
 const useTimer = (follwingDate = new Date()) => {
    const [timeLeft, setTimeLeft] = useState(() => {
@@ -32,5 +37,7 @@ const useTimer = (follwingDate = new Date()) => {
    }, [timeLeft]);
    return { days, hours, minutes, seconds };
 };
+
+useTimer.propTypes = propTypes;
 
 export default useTimer;

@@ -1,19 +1,24 @@
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import { Avatar } from "@mui/material";
-import classNames from "classnames/bind";
 
 import { TextFieldV2 as TextField } from "../../../../components/TextField";
 import Button from "../../../../components/Button";
+import Avatar from "../../../../components/Avatar";
 import CommentItem from "../CommentItem";
 
 import commentAPI from "../../../../services/commentAPI";
-import { getTaskById } from "../../../../redux/slices/taskSlice";
+import { getTaskById } from "../../../../slices/taskSlice";
 import useRequest from "../../../../hooks/useRequest";
+import { showSuccess, showError } from "../../../../utils/toast";
 
-import styles from "./Comment.module.scss";
-const cx = classNames.bind(styles);
+import {
+   CommentList,
+   InputControl,
+   InputGroup,
+   InputHelper,
+   InputWrapper,
+   Wrapper,
+} from "./Styles";
 
 const Comment = () => {
    const dispatch = useDispatch();
@@ -35,20 +40,23 @@ const Comment = () => {
    };
 
    const handleAddComment = () => {
+      if (!commentRef.current.getValue()) {
+         showError("Please enter your comment!");
+         return;
+      }
+
       createComment
          .runAsync({
             taskId: task.taskId,
             contentComment: commentRef.current.getValue(),
          })
          .then(() => {
-            toast.success("Add comment successful");
+            showSuccess("Add comment successful");
             commentRef.current.setValue("");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
    };
 
@@ -60,14 +68,12 @@ const Comment = () => {
             contentComment: inputRef.current.getValue(),
          })
          .then(() => {
-            toast.success("Update comment successful");
+            showSuccess("Update comment successful");
             formMethod.handleCloseEdit();
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          })
          .finally(() => {
             formMethod.setLoadingSaveBtn(false);
@@ -78,54 +84,47 @@ const Comment = () => {
       commentAPI
          .deleteComment(item.id)
          .then(() => {
-            toast.success("Delete comment successful");
+            showSuccess("Delete comment successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
    };
 
    return (
-      <div className={cx("container")}>
-         <div className={cx("inputWrapper")}>
-            <Avatar src={user?.avatar} sx={{ width: 32, height: 32 }} />
-            <div
-               className={cx("inputGroup", { visible: isCommentInputVisible })}
-            >
+      <Wrapper>
+         <InputWrapper>
+            <Avatar avatarUrl={user?.avatar} size={30} />
+            <InputGroup className={`${isCommentInputVisible ? "visible" : ""}`}>
                <TextField
-                  className={cx("inputRoot")}
-                  inputClass={cx("input")}
+                  className="inputRoot"
+                  inputClass="input"
                   type="textarea"
                   rows="1"
-                  variant="trello"
+                  variant="jira"
                   placeholder="Add a comment..."
                   onClick={handleOpenCommentInput}
                   autoHeight
                   ref={commentRef}
                />
-               <p className={cx("inputHelper")}>
+               <InputHelper className="inputHelper">
                   <span>Pro tip: </span>
-                  press 👻 to comment
-               </p>
-               <div className={cx("inputControl")}>
+                  press <span>M</span> to comment
+               </InputHelper>
+               <InputControl className="inputControl">
                   <Button
-                     solid
-                     primary
+                     variant="primary"
                      onClick={handleAddComment}
                      disable={createComment.loading}
                   >
                      Save
                   </Button>
-                  <Button solid onClick={handleCloseCommentInput}>
-                     Cancel
-                  </Button>
-               </div>
-            </div>
-         </div>
-         <div className={cx("listComment")}>
+                  <Button onClick={handleCloseCommentInput}>Cancel</Button>
+               </InputControl>
+            </InputGroup>
+         </InputWrapper>
+         <CommentList>
             {task?.lstComment
                .slice()
                .reverse()
@@ -137,8 +136,8 @@ const Comment = () => {
                      onDelete={handleDeleteComment}
                   />
                ))}
-         </div>
-      </div>
+         </CommentList>
+      </Wrapper>
    );
 };
 

@@ -1,31 +1,76 @@
+import PropTypes from "prop-types";
 import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import Tippy from "@tippyjs/react/headless";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import classnames from "classnames/bind";
 
 import Popper from "../Popper";
 
 import useRequest from "../../hooks/useRequest";
 import useUpdateValue from "../../hooks/useUpdateValue";
+import {
+   Wrapper,
+   WrapperPopper,
+   Search,
+   WrapperList,
+   Item,
+   Empty,
+   Loadmore,
+   StyledTitle,
+   Title,
+   IconTitle,
+} from "./Styles";
+import Icon from "../Icon";
 
-import styles from "./MenuSelect.module.scss";
-const cx = classnames.bind(styles);
+const propTypes = {
+   trigger: PropTypes.string,
+   placeholder: PropTypes.string,
+   items: PropTypes.array,
+   maxRender: PropTypes.number,
+   stepRender: PropTypes.number.isRequired,
+   value: PropTypes.any,
+   renderItem: PropTypes.func.isRequired,
+   getItemsKey: PropTypes.func.isRequired,
+   onChange: PropTypes.func.isRequired,
+   onBlur: PropTypes.func,
+   getSearchKey: PropTypes.func.isRequired,
+   searchPlaceholder: PropTypes.string,
+   selectPlaceHolder: PropTypes.node,
+   defaultPlaceHolder: PropTypes.node,
+   label: PropTypes.string,
+   rootClass: PropTypes.string,
+   arrow: PropTypes.any,
+   serviceAPI: PropTypes.func,
+   hideOnSelect: PropTypes.bool,
+};
+
+const defaultProps = {
+   trigger: "click",
+   placement: "bottom",
+   items: [],
+   stepRender: 5,
+   renderItem: (item) => item,
+   getItemsKey: (item) => item,
+   onChange: () => {},
+   onBlur: () => {},
+   getSearchKey: (item) => item,
+   searchPlaceholder: "Search",
+   hideOnSelect: true,
+};
 
 const MenuSelect = forwardRef(
    (
       {
-         trigger = "click",
-         placement = "bottom",
-         items = [],
+         trigger,
+         placement,
+         items,
          maxRender,
-         stepRender = 5,
+         stepRender,
          value,
-         renderItem = (item) => item,
-         getItemsKey = (item) => item,
-         onChange = () => {},
-         onBlur = () => {},
-         getSearchKey = (item) => item,
-         searchPlaceholder = "Search",
+         renderItem,
+         getItemsKey,
+         onChange,
+         onBlur,
+         getSearchKey,
+         searchPlaceholder,
          selectPlaceHolder,
          defaultPlaceHolder,
          label,
@@ -33,6 +78,7 @@ const MenuSelect = forwardRef(
          arrow,
          serviceAPI,
          hideOnSelect = true,
+         ...props
       },
       ref
    ) => {
@@ -102,7 +148,7 @@ const MenuSelect = forwardRef(
       }, []);
 
       return (
-         <div className={cx("tippyWrapper")}>
+         <Wrapper {...props}>
             {label ? <label htmlFor="">{label}</label> : null}
             <Tippy
                visible={visible}
@@ -115,9 +161,9 @@ const MenuSelect = forwardRef(
                   setSearchInput("");
                }}
                render={(attrs) => (
-                  <div className={cx("wrapper")} tabIndex="-1" {...attrs}>
+                  <WrapperPopper tabIndex="-1" {...attrs}>
                      <Popper>
-                        <div className={cx("search")}>
+                        <Search>
                            <input
                               type="text"
                               value={searchInput}
@@ -126,61 +172,61 @@ const MenuSelect = forwardRef(
                                  setSearchInput(evt.target.value)
                               }
                            />
-                        </div>
-                        <div className={cx("list")}>
+                        </Search>
+                        <div>
                            {API.loading ? "Loading" : null}
-                           <div className={cx("listWrapper")}>
+                           <WrapperList>
                               {filterItem.length > 0 ? (
                                  filterItem.map((item, index) => (
-                                    <div
+                                    <Item
                                        key={getItemsKey(item) || index}
-                                       className={cx("itemWrapper")}
                                        onClick={() => handleSelect(item)}
                                     >
                                        {renderItem(item)}
-                                    </div>
+                                    </Item>
                                  ))
                               ) : (
-                                 <div className={cx("noItem")}>No results</div>
+                                 <Empty>No results</Empty>
                               )}
-                           </div>
+                           </WrapperList>
                            {leftItems > 0 ? (
-                              <div
-                                 className={cx("loadMoreBtn")}
-                                 onClick={handleLoadMore}
-                              >
+                              <Loadmore onClick={handleLoadMore}>
                                  Load more
-                              </div>
+                              </Loadmore>
                            ) : null}
                         </div>
                      </Popper>
-                  </div>
+                  </WrapperPopper>
                )}
             >
-               <div
-                  className={cx("titleWrapper", {
-                     selecting: visible,
-                     [rootClass]: rootClass,
-                  })}
+               <StyledTitle
+                  className={` ${rootClass ? rootClass : ""}`}
                   onClick={() => setVisible(true)}
                >
-                  <div className={cx("title")}>
+                  <Title>
                      {defaultPlaceHolder
                         ? defaultPlaceHolder
                         : selectedItem
                         ? renderItem(selectedItem)
                         : selectPlaceHolder}
-                  </div>
+                  </Title>
                   {arrow ? (
-                     <div className={cx("titleIcon")}>
-                        <ExpandMoreIcon color="inherit" fontSize="inherit" />
-                     </div>
+                     <IconTitle>
+                        {visible ? (
+                           <Icon type="arrow-up" />
+                        ) : (
+                           <Icon type="arrow-down" />
+                        )}
+                     </IconTitle>
                   ) : null}
-               </div>
+               </StyledTitle>
             </Tippy>
-         </div>
+         </Wrapper>
       );
    }
 );
+
+MenuSelect.propTypes = propTypes;
+MenuSelect.defaultProps = defaultProps;
 
 export default MenuSelect;

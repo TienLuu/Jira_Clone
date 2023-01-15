@@ -6,29 +6,49 @@ import {
    useRef,
    useImperativeHandle,
 } from "react";
-import ReportProblemIcon from "@mui/icons-material/ReportProblem";
-import classNames from "classnames/bind";
 
 import useUpdateValue from "../../hooks/useUpdateValue";
+import { Message, StyledTextField } from "./Styles";
 
-import styles from "./TextField.module.scss";
-const cx = classNames.bind(styles);
+const propTypes = {
+   type: PropTypes.string,
+   variant: PropTypes.oneOf(["mui", "jira"]),
+   label: PropTypes.string,
+   onChange: PropTypes.func,
+   disabled: PropTypes.bool,
+   readOnly: PropTypes.bool,
+   autoHeight: PropTypes.bool,
+   className: PropTypes.string,
+   inputClass: PropTypes.string,
+   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+   placeholder: PropTypes.string,
+};
+
+const defaultProps = {
+   type: "text",
+   variant: "mui",
+   readOnly: false,
+   onChange: () => {},
+   onBlur: () => {},
+};
 
 const TextField = forwardRef(
    (
       {
-         type = "text",
-         variant = "mui",
+         type,
+         variant,
          label,
          className,
          inputClass,
          autoHeight,
-         value = "",
+         value,
          error,
-         readOnly = false,
-         disabled = false,
-         onChange = () => {},
-         onBlur = () => {},
+         readOnly,
+         disabled,
+         onChange,
+         onBlur,
+         placeholder,
          ...passProp
       },
       ref
@@ -57,7 +77,7 @@ const TextField = forwardRef(
          return () => {
             localRef.removeEventListener("input", autoResize);
          };
-      }, []);
+      }, [autoHeight]);
 
       const inputMethod = {
          setValue: (value) => {
@@ -85,52 +105,33 @@ const TextField = forwardRef(
       };
 
       return (
-         <div
-            className={cx("wrapper", {
-               [className]: className,
-               readOnly,
-               [variant]: variant,
-               disabled,
-            })}
+         <StyledTextField
+            readOnly={readOnly}
+            className={`${className ? [className] : ""} ${
+               variant ? [variant] : ""
+            }`}
          >
+            {label && <label htmlFor={id}>{label}</label>}
             <Component
-               className={cx("input", {
-                  [inputClass]: inputClass,
-               })}
+               className={`${inputClass ? [inputClass] : ""}`}
                type={type}
-               placeholder={variant === "MUI" ? "_" : null}
+               placeholder={variant === "mui" ? "" : placeholder}
                onChange={handleOnChange}
                onBlur={handleOnBlur}
                readOnly={readOnly}
                disabled={disabled}
-               value={inputValue}
-               {...passProp}
+               value={inputValue || ""}
                ref={myRef}
                id={id}
+               {...passProp}
             />
-            {label && <label htmlFor={id}>{label}</label>}
-            {error && (
-               <p className={styles.errorMess}>
-                  <ReportProblemIcon fontSize="inherit" color="inherit" />
-                  {error}
-               </p>
-            )}
-         </div>
+            {error && <Message>{error}</Message>}
+         </StyledTextField>
       );
    }
 );
 
-TextField.propTypes = {
-   type: PropTypes.string,
-   variant: PropTypes.oneOf(["mui", "trello"]),
-   label: PropTypes.string,
-   onChange: PropTypes.func,
-   disabled: PropTypes.bool,
-   readOnly: PropTypes.bool,
-   autoHeight: PropTypes.bool,
-   className: PropTypes.string,
-   inputClass: PropTypes.string,
-   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-};
+TextField.propTypes = propTypes;
+TextField.defaultProps = defaultProps;
 
 export default TextField;

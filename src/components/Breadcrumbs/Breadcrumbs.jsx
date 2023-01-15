@@ -1,9 +1,6 @@
 import { Fragment } from "react";
 import { useHref, NavLink } from "react-router-dom";
-import classnames from "classnames/bind";
-
-import styles from "./Breadcrumbs.module.scss";
-const cx = classnames.bind(styles);
+import { Container, Divider, StyledNavLink } from "./Styles";
 
 const Breadcrumbs = () => {
    const href = useHref();
@@ -22,24 +19,24 @@ const Breadcrumbs = () => {
       });
 
    return (
-      <div className={cx("wrapper")}>
+      <Container>
          {breadcrums.map((location, index) => (
             <Fragment key={index}>
-               <NavLink
-                  to={location.path}
-                  key={index}
-                  className={cx("link", {
-                     active: index === breadcrums.length - 1,
-                  })}
-               >
-                  {location.name.replaceAll("-", " ")}
-               </NavLink>
-               {index !== breadcrums.length - 1 ? (
-                  <span className={cx("slash")}>/</span>
-               ) : null}
+               <StyledNavLink>
+                  <NavLink
+                     to={location.path}
+                     key={index}
+                     className={`${
+                        index === breadcrums.length - 1 ? "rightHere" : ""
+                     }`}
+                  >
+                     {location.name.replaceAll("-", " ")}
+                  </NavLink>
+               </StyledNavLink>
+               {index !== breadcrums.length - 1 ? <Divider>/</Divider> : null}
             </Fragment>
          ))}
-      </div>
+      </Container>
    );
 };
 

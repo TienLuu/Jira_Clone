@@ -1,24 +1,37 @@
+import PropTypes from "prop-types";
 import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Avatar } from "@mui/material";
-import classnames from "classnames/bind";
 
 import { TextFieldV2 as TextField } from "../../../../components/TextField";
 import Button from "../../../../components/Button";
+import Avatar from "../../../../components/Avatar";
 
-import styles from "./CommentItem.module.scss";
-const cx = classnames.bind(styles);
+import {
+   CommentContent,
+   CommentOwner,
+   EditControl,
+   InputControl,
+   InputWrapper,
+   Item,
+} from "./Styles";
 
-const CommentItem = ({
-   item,
-   onSubmit = () => {},
-   onDelete = () => {},
-   inputHelperText,
-}) => {
-   const ref = useRef();
+const propTypes = {
+   item: PropTypes.object,
+   onSubmit: PropTypes.func,
+   onDelete: PropTypes.func,
+   inputHelperText: PropTypes.string,
+};
+
+const defaultProps = {
+   onSubmit: () => {},
+   onDelete: () => {},
+};
+
+const CommentItem = ({ item, onSubmit, onDelete, inputHelperText }) => {
    const { user } = useSelector((state) => state.auth);
    const [IsEditing, setIsEditing] = useState(false);
    const [loadingSaveBtn, setLoadingSaveBtn] = useState(false);
+   const ref = useRef();
 
    const isOwner = item.idUser === user.id;
 
@@ -51,50 +64,53 @@ const CommentItem = ({
    if (!item) return null;
 
    return (
-      <div className={cx("item", { owner: isOwner, editing: IsEditing })}>
-         <Avatar src={item.avatar} sx={{ width: 32, height: 32 }} />
-         <div className={cx("inputWrapper")}>
-            <p className={cx("commentOwner")}>{item.name}</p>
-            <p className={cx("commentContent")}>{item.commentContent}</p>
+      <Item
+         className={`${isOwner ? "owner" : ""} ${IsEditing ? "editing" : ""}`}
+      >
+         <Avatar avatarUrl={item.avatar} size={30} />
+         <InputWrapper className="inputWrapper">
+            <CommentOwner>{item.name}</CommentOwner>
+            <CommentContent className="commentContent">
+               {item.commentContent}
+            </CommentContent>
             {isOwner ? (
                <>
                   {IsEditing ? (
                      <TextField
-                        className={cx("inputRoot")}
+                        className="inputRoot"
                         value={item.commentContent || ""}
-                        inputClass={cx("input")}
+                        inputClass="input"
                         type="textarea"
                         rows="3"
-                        variant="trello"
+                        variant="jira"
                         placeholder="Add a comment..."
-                        // autoHeight
                         ref={ref}
                      />
                   ) : null}
                   {inputHelperText}
-                  <div className={cx("editControl")}>
+                  <EditControl className="editControl">
                      <button onClick={handleOpenEdit}>Edit</button>
                      <span>▪</span>
                      <button onClick={handleDelete}>Delete</button>
-                  </div>
-                  <div className={cx("inputControl")}>
+                  </EditControl>
+                  <InputControl className="inputControl">
                      <Button
-                        solid
-                        primary
+                        variant="primary"
                         onClick={handleSubmit}
                         disable={loadingSaveBtn}
                      >
                         Save
                      </Button>
-                     <Button solid onClick={handleCloseEdit}>
-                        Cancel
-                     </Button>
-                  </div>
+                     <Button onClick={handleCloseEdit}>Cancel</Button>
+                  </InputControl>
                </>
             ) : null}
-         </div>
-      </div>
+         </InputWrapper>
+      </Item>
    );
 };
+
+CommentItem.propTypes = propTypes;
+CommentItem.defaultProps = defaultProps;
 
 export default CommentItem;

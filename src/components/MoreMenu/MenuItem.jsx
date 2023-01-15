@@ -1,30 +1,33 @@
 import PropTypes from "prop-types";
 import Button from "../Button/Button";
-import classnames from "classnames/bind";
 
-import styles from "./Menu.module.scss";
-const cx = classnames.bind(styles);
+const propTypes = {
+   item: PropTypes.object.isRequired,
+   onClick: PropTypes.func,
+};
 
-const MenuItem = ({ item = {}, onClick }) => {
-   const customClass = cx("item");
+const defaultProps = {
+   item: {},
+   onclick: () => {},
+};
 
+const MenuItem = ({ item, onClick }) => {
    return (
       <>
          <Button
             fullWidth
-            className={customClass}
-            leftIcon={item.icon}
+            icon={item.icon}
             to={item.to}
             onClick={onClick}
+            variant="empty"
          >
             {item.title}
          </Button>
       </>
    );
 };
-MenuItem.propTypes = {
-   item: PropTypes.object.isRequired,
-   onClick: PropTypes.func,
-};
+
+MenuItem.propTypes = propTypes;
+MenuItem.defaultProps = defaultProps;
 
 export default MenuItem;

@@ -3,34 +3,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import classNames from "classnames/bind";
 
-import styles from "./Modal.module.scss";
-const cx = classNames.bind(styles);
+import Icon from "../Icon";
+import { Header, ButtonClose, Body, Footer } from "./Styles";
 
-const Modal = ({ open, onClose, title, footer, children }) => {
-   return (
-      <Dialog open={open} onClose={onClose} scroll="body">
-         <DialogTitle>
-            <header className={cx("header")}>
-               <h3>{title}</h3>
-               <button onClick={onClose} className={cx("closeBtn")}>
-                  <CloseOutlinedIcon fontSize="inherit" color="inherit" />
-               </button>
-            </header>
-         </DialogTitle>
-         <DialogContent>
-            <div className={cx("body")}>{children}</div>
-         </DialogContent>
-         <DialogActions>
-            <div className={cx("footer")}>{footer}</div>
-         </DialogActions>
-      </Dialog>
-   );
-};
-
-Modal.propTypes = {
+const propTypes = {
    open: PropTypes.bool.isRequired,
    onClose: PropTypes.func.isRequired,
    title: PropTypes.string,
@@ -38,5 +15,28 @@ Modal.propTypes = {
    footer: PropTypes.node,
    children: PropTypes.node,
 };
+
+const Modal = ({ open, onClose, title, footer, children }) => {
+   return (
+      <Dialog open={open} onClose={onClose} scroll="body">
+         <DialogTitle>
+            <Header>
+               <h3>{title}</h3>
+               <ButtonClose onClick={onClose}>
+                  <Icon type="close" size={35} />
+               </ButtonClose>
+            </Header>
+         </DialogTitle>
+         <DialogContent>
+            <Body>{children}</Body>
+         </DialogContent>
+         <DialogActions>
+            <Footer>{footer}</Footer>
+         </DialogActions>
+      </Dialog>
+   );
+};
+
+Modal.propTypes = propTypes;
 
 export default Modal;

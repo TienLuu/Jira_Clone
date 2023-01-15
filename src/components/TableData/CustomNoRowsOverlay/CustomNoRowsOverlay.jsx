@@ -1,12 +1,12 @@
-import { NoDocument } from "../../SVG";
-import styles from "./CustomNoRowsOverlay.module.scss";
+import { NoDocument } from "../../SVG/SVG";
+import { Wrapper } from "./Styles";
 
 const CustomNoRowsOverlay = () => {
    return (
-      <div className={styles.wrapper}>
+      <Wrapper>
          <NoDocument />
          <p>No Data Available</p>
-      </div>
+      </Wrapper>
    );
 };
 

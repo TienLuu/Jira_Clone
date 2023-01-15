@@ -1,8 +1,6 @@
 import PropTypes from "prop-types";
 import ArrowBackIosNewOutlinedIcon from "@mui/icons-material/ArrowBackIosNewOutlined";
 
-import styles from "./Menu.module.scss";
-
 const MenuHeader = ({ title, onBack }) => {
    return (
       <div className={styles.title}>

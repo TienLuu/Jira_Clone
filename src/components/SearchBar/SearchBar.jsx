@@ -6,41 +6,62 @@ import {
    useImperativeHandle,
    useEffect,
 } from "react";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import SyncIcon from "@mui/icons-material/Sync";
-import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
-import classNames from "classnames/bind";
 
-import styles from "./SearchBar.module.scss";
-const cx = classNames.bind(styles);
+import Icon from "../Icon";
+import { SearchInput, StyledSearchBar, BtnSubmit } from "./Styles";
+
+const propTypes = {
+   outline: PropTypes.bool,
+   loading: PropTypes.any,
+   onChange: PropTypes.func,
+   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+   placeholder: PropTypes.string,
+   onClearSearchValue: PropTypes.func,
+   onSubmit: PropTypes.func,
+   options: PropTypes.shape({
+      debounce: PropTypes.bool,
+      onDebounce: PropTypes.func,
+      time: PropTypes.number,
+   }),
+};
+
+const defaultProps = {
+   outline: true,
+   onChange: () => {},
+   onClearSearchValue: () => {},
+   onSubmit: () => {},
+   options: {
+      debounce: false,
+      onDebounce: () => {},
+      time: 200,
+   },
+   value: "",
+   placeholder: "Search here",
+};
 
 const SearchBar = forwardRef(
    (
       {
          loading,
-         onChange = () => {},
-         onClearSearchValue = () => {},
-         onSubmit = () => {},
-         options = {
-            debounce: false,
-            onDebounce: () => {},
-            time: 200,
-         },
-         value = "",
-         placeholder = "Search here",
+         onChange,
+         onClearSearchValue,
+         onSubmit,
+         options,
+         value,
+         placeholder,
          outline,
       },
       ref
    ) => {
       const [inputValue, setInputValue] = useState(value);
       const isFirstRender = useRef(true);
-
       const searchMethod = {
          getValue: () => inputValue,
          setValue: (value) => {
             setInputValue(value);
          },
       };
+
       useImperativeHandle(ref, () => searchMethod);
 
       const handleChange = (evt) => {
@@ -68,43 +89,29 @@ const SearchBar = forwardRef(
       }, [inputValue]);
 
       return (
-         <div className={cx("searchBar", { outline })}>
-            <input
+         <StyledSearchBar outline={outline}>
+            <SearchInput
                type="text"
                value={inputValue}
-               className={cx("searchInput")}
                placeholder={placeholder}
                onChange={handleChange}
             />
             {loading ? (
-               <SyncIcon className={cx("icon")} fontSize="inherit" />
+               <Icon type="more" className="icon" />
             ) : inputValue ? (
-               <ClearOutlinedIcon
-                  className={cx("icon")}
-                  fontSize="inherit"
-                  onClick={handleResetInput}
-               />
+               <Icon type="close" className="icon" onClick={handleResetInput} />
             ) : (
                ""
             )}
-            <button
-               className={cx("submit")}
-               onClick={() => onSubmit(inputValue)}
-            >
-               <SearchOutlinedIcon fontSize="inherit" />
-            </button>
-         </div>
+            <BtnSubmit onClick={() => onSubmit(inputValue)}>
+               <Icon type="search" />
+            </BtnSubmit>
+         </StyledSearchBar>
       );
    }
 );
 
-SearchBar.propTypes = {
-   outline: PropTypes.bool,
-   loading: PropTypes.any,
-   onChange: PropTypes.func,
-   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-   placeholder: PropTypes.string,
-   onClearValue: PropTypes.func,
-   onSubmit: PropTypes.func,
-};
+SearchBar.propTypes = propTypes;
+SearchBar.defaultProps = defaultProps;
+
 export default SearchBar;

@@ -1,117 +1,92 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { GitHub } from "@mui/icons-material";
-import classnames from "classnames/bind";
 
-import { JiraLogo } from "../../../components/SVG";
+import Logo from "../../../components/SVG/Logo";
 import Button from "../../../components/Button";
 import MoreMenu from "../../../components/MoreMenu";
-import { Avatar } from "../../../components/Avatar";
+import Avatar from "../../../components/Avatar";
 
-import { logout } from "../../../redux/slices/authSlice";
+import { logout } from "../../../slices/authSlice";
+import { menuUser } from "./header-config";
+import {
+   Container,
+   Navigation,
+   MoreInfo,
+   StyledLogo,
+   NavItem,
+   Nav,
+} from "./Styled";
 
-import styles from "./Header.module.scss";
-const cx = classnames.bind(styles);
+const propTypes = {
+   height: PropTypes.string.isRequired,
+};
 
-const Header = () => {
+const Header = ({ height }) => {
    const navigate = useNavigate();
-   const location = useLocation();
    const dispatch = useDispatch();
    const { user } = useSelector((state) => state.auth);
 
-   const menuUser = [
-      { title: "Profile", action: "get-profile" },
-      { title: "Logout", action: "logout", seperate: true },
-   ];
-
-   const menuAuth = [
-      { title: "Register", action: "register" },
-      { title: "Login", action: "login" },
-   ];
-
    const handleSelectOption = ({ action }) => {
       if (action === "get-profile") {
-         navigate(`/jira/users/${user.id}`);
+         navigate(`/users/${user.id}`);
          return;
       }
 
-      if (action === "logout") {
+      if (action === "signout") {
          dispatch(logout());
-         navigate(`/login`);
-         return;
-      }
-
-      if (action === "register") {
-         navigate(`/register?redirectUrl=${location.pathname}`);
-         return;
-      }
-
-      if (action === "login") {
-         navigate(`/login?redirectUrl=${location.pathname}`);
+         navigate(`/signin`);
          return;
       }
    };
 
    return (
-      <div className={cx("wrapper")}>
-         <div className={cx("logo")}>
-            <JiraLogo width={20} height={20} />
-            <h1>Jira Software</h1>
-         </div>
-         <div className={cx("navigation")}>
-            <ul className={cx("list")}>
-               <li className={cx("item")}>
+      <Container height={height}>
+         <StyledLogo onClick={() => navigate("/")}>
+            <Logo id="header" light />
+         </StyledLogo>
+         <Navigation className="navigation">
+            <Nav>
+               <NavItem>
                   <NavLink
-                     to="/jira/my-works"
-                     className={({ isActive }) =>
-                        cx("link", { active: isActive })
-                     }
+                     to="/mywork"
+                     className={({ isActive }) => `${isActive ? "active" : ""}`}
                   >
                      My Works
                   </NavLink>
-               </li>
-               <li className={cx("item")}>
+               </NavItem>
+               <NavItem>
                   <NavLink
-                     to="/jira/projects"
-                     className={({ isActive }) =>
-                        cx("link", { active: isActive })
-                     }
+                     to="/projects"
+                     className={({ isActive }) => `${isActive ? "active" : ""}`}
                   >
                      Projects
                   </NavLink>
-               </li>
-               <li className={cx("item")}>
+               </NavItem>
+               <NavItem>
                   <NavLink
-                     to="/jira/users"
-                     className={({ isActive }) =>
-                        cx("link", { active: isActive })
-                     }
+                     to="/users"
+                     className={({ isActive }) => `${isActive ? "active" : ""}`}
                   >
                      Users
                   </NavLink>
-               </li>
-            </ul>
-         </div>
-         <div className={cx("right")}>
-            <Button solid leftIcon={<GitHub />} className={cx("githubBtn")}>
-               Github Repo
-            </Button>
-            {user ? (
-               <MoreMenu items={menuUser} onChange={handleSelectOption}>
-                  <div className={cx("avatarWrapper")}>
-                     <Avatar src={user?.avatar} variant="circle" />
-                  </div>
-               </MoreMenu>
-            ) : (
-               <>
-                  <MoreMenu items={menuAuth} onChange={handleSelectOption}>
-                     <span>Login/register</span>
-                  </MoreMenu>
-               </>
-            )}
-         </div>
-      </div>
+               </NavItem>
+            </Nav>
+         </Navigation>
+         <MoreInfo>
+            <NavLink to="/githubrepo" target="_blank">
+               <Button icon="github">Github Repo</Button>
+            </NavLink>
+            <MoreMenu items={menuUser} onChange={handleSelectOption}>
+               <div className="avatarWrapper">
+                  <Avatar avatarUrl={user.avatar} />
+               </div>
+            </MoreMenu>
+         </MoreInfo>
+      </Container>
    );
 };
+
+Header.propTypes = propTypes;
 
 export default Header;

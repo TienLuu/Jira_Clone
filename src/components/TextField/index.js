@@ -1,2 +1,2 @@
-export { default } from './TextField'
-export { default as TextFieldV2 } from './TextField.v2'
+export { default } from "./TextField";
+export { default as TextFieldV2 } from "./TextField.v2";

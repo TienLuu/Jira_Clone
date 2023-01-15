@@ -1,16 +1,21 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet, useParams } from "react-router-dom";
-import classnames from "classnames/bind";
+import { ToastContainer, Slide } from "react-toastify";
 
-import Navbar from "./Navbar";
+import ProjectSidebar from "../components/ProjectSideBar/";
+import ProjectNavbar from "../components/ProjectNavbar";
 import Breadcrumbs from "../../components/Breadcrumbs";
-import SubNavbar from "./SubNavbar";
 
-import { getProjectDetail } from "../../redux/slices/projectSlice";
-
-import styles from "./ProjectLayout.module.scss";
-const cx = classnames.bind(styles);
+import { getProjectDetail } from "../../slices/projectSlice";
+import {
+   Wrapper,
+   Navigation,
+   Main,
+   StyledBreadcrumbs,
+   StyledContent,
+   WrapperContent,
+} from "./Styles";
 
 const ProjectLayout = () => {
    const { projectId } = useParams();
@@ -18,26 +23,26 @@ const ProjectLayout = () => {
 
    useEffect(() => {
       dispatch(getProjectDetail(projectId));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+   }, [projectId]);
 
    return (
-      <div className={cx("wrapper")}>
-         <div className={cx("left")}>
-            <Navbar />
-            <SubNavbar />
-         </div>
-         <div className={cx("right")}>
-            <div className={cx("rightTop")}>
+      <Wrapper>
+         <Navigation>
+            <ProjectNavbar />
+            <ProjectSidebar />
+         </Navigation>
+         <Main>
+            <StyledBreadcrumbs>
                <Breadcrumbs />
-            </div>
-            <div className={cx("contentWrapper")}>
-               <div className={cx("content")}>
+            </StyledBreadcrumbs>
+            <WrapperContent>
+               <StyledContent>
                   <Outlet />
-               </div>
-            </div>
-         </div>
-      </div>
+               </StyledContent>
+            </WrapperContent>
+         </Main>
+         <ToastContainer transition={Slide} />
+      </Wrapper>
    );
 };
 

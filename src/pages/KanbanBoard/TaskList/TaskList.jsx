@@ -1,16 +1,18 @@
+import PropTypes from "prop-types";
 import TaskItem from "./TaskItem/TaskItem";
 import { Droppable } from "react-beautiful-dnd";
-import classnames from "classnames/bind";
 
-import styles from "./TaskList.module.scss";
-const cx = classnames.bind(styles);
+import { StyledTaskList } from "./Styles";
+
+const propTypes = {
+   taskList: PropTypes.object,
+};
 
 const TaskList = ({ taskList }) => {
    return (
       <Droppable droppableId={taskList?.statusId || "w1"}>
          {(provider) => (
-            <ul
-               className={cx("taskList")}
+            <StyledTaskList
                {...provider.droppableProps}
                ref={provider.innerRef}
             >
@@ -18,10 +20,12 @@ const TaskList = ({ taskList }) => {
                   <TaskItem key={task.taskId} task={task} index={index} />
                ))}
                {provider.placeholder}
-            </ul>
+            </StyledTaskList>
          )}
       </Droppable>
    );
 };
+
+TaskList.propTypes = propTypes;
 
 export default TaskList;

@@ -1,34 +1,56 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Avatar } from "@mui/material";
-import classnames from "classnames/bind";
 
-import Button from "../../../components/Button";
-import MenuSelect from "../../../components/MenuSelect";
-import MyCkEditor from "../../../components/MyCkEditor";
 import { TextFieldV2 as TextField } from "../../../components/TextField";
-import TimeTracking from "../../component/TimeTracking";
-import SkeletonLoad from "./SkeletonLoad";
+import MenuSelect from "../../../components/MenuSelect";
+import Button from "../../../components/Button";
+import Editor from "../../../components/Editor";
+import Avatar from "../../../components/Avatar";
+import Icon from "../../../components/Icon";
+import IssueTypeIcon from "../../../components/IssueTypeIcon";
+import IssuePriorityIcon from "../../../components/IssuePriorityIcon";
+import TimeTracking from "../../../layouts/components/TimeTracking";
 import Comment from "./Comment";
+import SkeletonLoad from "./SkeletonLoad";
 
 import projectAPI from "../../../services/projectAPI";
 import anothersAPI from "../../../services/anothersAPI";
-import { toggleTaskModal, getTaskById } from "../../../redux/slices/taskSlice";
-import { getProjectDetail } from "../../../redux/slices/projectSlice";
-import { taskTypeMap, priorityMap } from "../dummyData";
+import { toggleTaskModal, getTaskById } from "../../../slices/taskSlice";
+import { getProjectDetail } from "../../../slices/projectSlice";
+import { IssuePriorityCopy, IssueTypeCopy } from "../../../constants/issues";
+import { showSuccess, showError } from "../../../utils/toast";
 
-import styles from "./TaskDetailModal.module.scss";
-const cx = classnames.bind(styles);
+import {
+   Assignment,
+   AssignmentBtn,
+   Body,
+   BodyLeft,
+   BodyRight,
+   ControlGroup,
+   Header,
+   Member,
+   MemberName,
+   MemberWrapper,
+   Status,
+   StyledEditorControl,
+   StyledTaskType,
+   StyledEditor,
+   Title,
+   TypeName,
+   StyledTitle,
+   TaskType,
+   Priority,
+   PriorityName,
+   ButtonRemove,
+   FormGroup,
+} from "./Styles";
+import { useParams } from "react-router-dom";
 
 const TaskDetailModal = () => {
+   const { projectId } = useParams();
    const dispatch = useDispatch();
 
    const descriptionRef = useRef();
@@ -43,9 +65,15 @@ const TaskDetailModal = () => {
    );
    const { selectedProject } = useSelector((state) => state.project);
 
+   const handleCloseTaskModal = () => {
+      dispatch(getProjectDetail(selectedProject.id));
+      dispatch(toggleTaskModal(false));
+   };
+
    const handleOpenEditor = () => {
       SetIsEditorVisible(true);
    };
+
    const handleCloseEditor = () => {
       SetIsEditorVisible(false);
       descriptionRef.current.setData(task.description);
@@ -61,14 +89,12 @@ const TaskDetailModal = () => {
       projectAPI
          .updateTask(data)
          .then(() => {
-            toast.success("Update task successful");
+            showSuccess("Update task successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
             inputMethod.setValue(task.taskName);
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
    };
 
@@ -81,14 +107,12 @@ const TaskDetailModal = () => {
       projectAPI
          .updateTask(data)
          .then(() => {
-            toast.success("Update task successful");
+            showSuccess("Update task successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
             inputMethod.setValue(task.taskTypeDetail);
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
    };
 
@@ -99,13 +123,12 @@ const TaskDetailModal = () => {
             description: descriptionRef.current.getData(),
          })
          .then(() => {
-            toast.success("Update task successful");
+            showSuccess("Update task successful");
             dispatch(getTaskById(task.taskId));
+            handleCloseEditor();
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
             descriptionRef.current.setData(task.description);
          });
    };
@@ -117,13 +140,11 @@ const TaskDetailModal = () => {
             statusId: item.statusId,
          })
          .then(() => {
-            toast.success("Change status successful");
+            showSuccess("Change status successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
             selectMethod.setValue(task?.taskStatusDetail);
          });
    };
@@ -135,13 +156,11 @@ const TaskDetailModal = () => {
             priorityId: item.priorityId,
          })
          .then(() => {
-            toast.success("Change priority successful");
+            showSuccess("Change priority successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
             selectMethod.setValue(task?.priorityTask);
          });
    };
@@ -153,13 +172,11 @@ const TaskDetailModal = () => {
             userId: id,
          })
          .then(() => {
-            toast.success("Remove user successful");
+            showSuccess("Remove user successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
    };
 
@@ -174,13 +191,11 @@ const TaskDetailModal = () => {
             taskId: task.taskId,
          })
          .then(() => {
-            toast.success("Add user successful");
+            showSuccess("Add user successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
             selectMethod.toggleSelect(false);
          });
    };
@@ -189,13 +204,12 @@ const TaskDetailModal = () => {
       projectAPI
          .deleteTask(task.taskId)
          .then(() => {
-            toast.success("Delte task successful");
+            showSuccess("Delte task successful");
             dispatch(toggleTaskModal(false));
+            dispatch(getProjectDetail(projectId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
    };
 
@@ -208,14 +222,12 @@ const TaskDetailModal = () => {
             originalEstimate: value,
          })
          .then(() => {
-            toast.success("Update task successful");
+            showSuccess("Update task successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
             inputMethod.setValue(task?.originalEstimate);
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
    };
 
@@ -235,19 +247,12 @@ const TaskDetailModal = () => {
             timeTrackingRemaining: timeRemain,
          })
          .then(() => {
-            toast.success("Update task successful");
+            showSuccess("Update task successful");
             dispatch(getTaskById(task.taskId));
          })
          .catch((error) => {
-            toast.error(
-               typeof error === "string" ? error : "Not have permission"
-            );
+            showError(error);
          });
-   };
-
-   const handleCloseTaskModal = () => {
-      dispatch(getProjectDetail(selectedProject.id));
-      dispatch(toggleTaskModal(false));
    };
 
    return (
@@ -260,79 +265,79 @@ const TaskDetailModal = () => {
       >
          <DialogTitle>
             {loading && !task ? null : (
-               <header className={cx("header")}>
-                  <div className={cx("headerLeft")}>
+               <Header>
+                  <StyledTaskType>
                      {/*--------------------- TASK TYPE -----------------------*/}
                      <MenuSelect
                         serviceAPI={anothersAPI.getTaskType}
                         value={task?.taskTypeDetail}
-                        renderItem={(item) => (
-                           <div className={cx("taskType")}>
-                              {taskTypeMap[item.id]?.icon}
-                              <span>
-                                 {taskTypeMap[item.id]?.name} - {task?.taskId}
-                              </span>
-                           </div>
+                        renderItem={(item, index) => (
+                           <TaskType key={index}>
+                              <IssueTypeIcon type={item.taskType} center />
+                              <TypeName>
+                                 {IssueTypeCopy[item.taskType]} - {task?.taskId}
+                              </TypeName>
+                           </TaskType>
                         )}
                         placement="bottom-start"
                         getSearchKey={(item) => item.taskType}
                         getItemsKey={(item) => item.id}
                         selectPlaceHolder={"Select Task Type"}
                         onChange={handleUpdateTaskType}
+                        className="styledMenuSelect"
                      />
-                  </div>
-                  <div className={cx("headerRight")}>
-                     <Button className={cx("headerBtn")}>
-                        <CampaignOutlinedIcon
-                           fontSize="inherit"
-                           color="inherit"
-                        />
+                  </StyledTaskType>
+                  <ControlGroup>
+                     <Button className="controlBtn">
+                        <Icon type="feedback" size={14} />
                         <span>Give feedback</span>
                      </Button>
+                     <Button className="controlBtn">
+                        <Icon type="link" size={14} />
+                        <span>Copy Link</span>
+                     </Button>
                      <Button
-                        className={cx("headerBtn", "deleteTaskBtn")}
+                        className="controlBtn deleteTaskBtn"
                         onClick={handleDeleteTask}
                      >
-                        <DeleteOutlineIcon fontSize="inherit" color="inherit" />
+                        <Icon type="trash" center />
                      </Button>
                      <Button
-                        className={cx("headerBtn")}
+                        className="controlBtn"
                         onClick={handleCloseTaskModal}
                      >
-                        <ClearIcon fontSize="inherit" color="inherit" />
+                        <Icon type="close" center />
                      </Button>
-                  </div>
-               </header>
+                  </ControlGroup>
+               </Header>
             )}
          </DialogTitle>
          <DialogContent>
             {loading && !task ? (
                <SkeletonLoad />
             ) : (
-               <section className={cx("body")}>
-                  <div className={cx("left")}>
-                     <div className={cx("titleWrapper")}>
+               <Body>
+                  <BodyLeft>
+                     <StyledTitle>
                         {/*--------------------- TASK NAME -----------------------*/}
                         <TextField
                            onBlur={handleUpdateTaskName}
-                           inputClass={cx("taskName")}
+                           inputClass="taskName"
                            type="textarea"
                            rows="1"
                            value={task?.taskName || ""}
-                           variant="trello"
-                           placeholder="Add short summary"
+                           variant="jira"
+                           placeholder="Add Short summary"
                            autoHeight
                         />
-                     </div>
-                     <div className={cx("formGroup")}>
+                     </StyledTitle>
+                     <FormGroup>
                         {/*--------------------- TASK DESCRIPTION -----------------------*/}
-                        <h4>Description</h4>
-                        <div
-                           className={cx("editor", {
-                              visible: isEditorVisible,
-                           })}
+                        <Title size={15}>Description</Title>
+                        <StyledEditor
+                           className={`${isEditorVisible ? "visible" : ""}`}
                         >
-                           <MyCkEditor
+                           <Editor
                               data={task?.description}
                               editorRef={descriptionRef}
                               onFocus={handleOpenEditor}
@@ -340,41 +345,36 @@ const TaskDetailModal = () => {
                                  placeholder: "Add a description here ...",
                               }}
                            />
-                        </div>
-                        <div
-                           className={cx("descriptionControl", {
-                              visible: isEditorVisible,
-                           })}
+                        </StyledEditor>
+                        <StyledEditorControl
+                           className={`${isEditorVisible ? "visible" : ""}`}
                         >
                            <Button
-                              solid
-                              primary
+                              variant="primary"
                               onClick={handleUpdateDescription}
                            >
                               Save
                            </Button>
-                           <Button solid onClick={handleCloseEditor}>
-                              Cancel
-                           </Button>
-                        </div>
-                     </div>
-                     <div className={cx("formGroup", "commentGroup")}>
+                           <Button onClick={handleCloseEditor}>Cancel</Button>
+                        </StyledEditorControl>
+                     </FormGroup>
+                     <FormGroup className="comment">
                         {/*--------------------- TASK COMMENTS -----------------------*/}
-                        <h4>Comments</h4>
+                        <Title size={15}>Comments</Title>
                         <Comment />
-                     </div>
-                  </div>
-                  <div className={cx("right")}>
-                     <div className={cx("formGroup")}>
+                     </FormGroup>
+                  </BodyLeft>
+                  <BodyRight>
+                     <FormGroup>
                         {/*--------------------- TASK STATUS -----------------------*/}
-                        <h4>STATUS</h4>
+                        <Title>STATUS</Title>
                         <MenuSelect
                            serviceAPI={anothersAPI.getTaskStatus}
                            value={task?.taskStatusDetail}
                            renderItem={(item) => (
-                              <div className={cx("taskStatus")}>
+                              <Status key={item.statusName}>
                                  {item.statusName}
-                              </div>
+                              </Status>
                            )}
                            getSearchKey={(item) => item.statusName}
                            getItemsKey={(item) => item.statusId}
@@ -382,43 +382,35 @@ const TaskDetailModal = () => {
                            selectPlaceHolder={"Select Status"}
                            arrow
                         />
-                     </div>
-                     <div className={cx("formGroup")}>
+                     </FormGroup>
+                     <FormGroup>
                         {/*--------------------- TASK ASSIGNMENT -----------------------*/}
-                        <h4>ASSIGNMENT</h4>
-                        <div className={cx("memberWrapper")}>
+                        <Title>ASSIGNMENT</Title>
+                        <MemberWrapper>
                            {task?.assigness.map((item) => (
-                              <div className={cx("member")} key={item.id}>
-                                 <Avatar
-                                    src={item.avatar}
-                                    sx={{ width: 24, height: 24 }}
-                                 />
-                                 <span>{item.name}</span>
-                                 <button
-                                    className={cx("removeMemberBtn")}
+                              <Member key={item.id}>
+                                 <Avatar avatarUrl={item.avatar} size={24} />
+                                 <MemberName>{item.name}</MemberName>
+                                 <ButtonRemove
                                     onClick={() => handleRemoveUser(item.id)}
                                  >
-                                    <ClearIcon
-                                       fontSize="inherit"
-                                       color="inherit"
-                                    />
-                                 </button>
-                              </div>
+                                    <Icon type="close" />
+                                 </ButtonRemove>
+                              </Member>
                            ))}
                            <MenuSelect
                               onChange={handleAddUser}
                               renderItem={(item) => (
-                                 <div
-                                    className={cx("assignment", {
-                                       alreadyExist: task?.assigness.find(
+                                 <Assignment
+                                    className={`${
+                                       !!task?.assigness.find(
                                           (x) => x.id === item.userId
-                                       ),
-                                    })}
+                                       )
+                                          ? "alreadyExist"
+                                          : ""
+                                    }`}
                                  >
-                                    <Avatar
-                                       src={item.avatar}
-                                       sx={{ width: 24, height: 24 }}
-                                    />
+                                    <Avatar avatarUrl={item.avatar} size={24} />
                                     <span>
                                        {item.name}
                                        {selectedProject.creator.id ===
@@ -426,89 +418,90 @@ const TaskDetailModal = () => {
                                           ? " 🔱 (Project owner)"
                                           : ""}
                                     </span>
-                                 </div>
+                                 </Assignment>
                               )}
                               getSearchKey={(item) => item.name}
                               getItemsKey={(item) => item.userId}
                               items={selectedProject?.members.concat([]) || []}
-                              rootClass={cx("assignmentBtnWrapper")}
+                              rootClass="assignmentBtnWrapper"
                               defaultPlaceHolder={
-                                 <div className={cx("assignmentBtn")}>
-                                    <AddOutlinedIcon
-                                       fontSize="inherit"
-                                       color="inherit"
-                                    />
+                                 <AssignmentBtn className="assignmentBtn">
+                                    <Icon type="plus" size={15} />
                                     <span>Add User</span>
-                                 </div>
+                                 </AssignmentBtn>
                               }
                            />
-                        </div>
-                     </div>
-                     <div className={cx("formGroup")}>
+                        </MemberWrapper>
+                     </FormGroup>
+                     <FormGroup>
                         {/*--------------------- TASK PRIORITY -----------------------*/}
-                        <h4>PRIORITY</h4>
+                        <Title>PRIORITY</Title>
                         <MenuSelect
                            serviceAPI={anothersAPI.getPriorities}
                            value={task?.priorityTask}
                            renderItem={(item) => (
-                              <div className={cx("taskPriority")}>
-                                 {priorityMap[item.priorityId]?.icon}
-                                 <span>{item.priority}</span>
-                              </div>
+                              <Priority key={item.priorityId}>
+                                 <IssuePriorityIcon
+                                    priority={`${item.priorityId}`}
+                                 />
+                                 <PriorityName>
+                                    {IssuePriorityCopy[item.priorityId]}
+                                 </PriorityName>
+                              </Priority>
                            )}
                            getSearchKey={(item) => item.description}
                            getItemsKey={(item) => item.priorityId}
                            selectPlaceHolder={"Select Status"}
                            onChange={handleChangePriority}
                         />
-                     </div>
-                     <div className={cx("formGroup")}>
+                     </FormGroup>
+                     <FormGroup>
                         {/*--------------------- TASK ORIGINAL ESTIMATE -----------------------*/}
-                        <h4>ORIGINAL ESTIMATE (HOURS)</h4>
+                        <Title>ORIGINAL ESTIMATE (HOURS)</Title>
                         <TextField
-                           variant="trello"
+                           variant="jira"
                            type="number"
                            value={task?.originalEstimate || 0}
                            onBlur={handleChangeEstimate}
                            min="0"
                         />
-                     </div>
-                     <div className={cx("formGroup")}>
+                     </FormGroup>
+                     <FormGroup>
                         {/*--------------------- TASK TIME TRACKING SPEND -----------------------*/}
-                        <h4>Time spend (hours)</h4>
+                        <Title>Time spend (hours)</Title>
                         <TextField
                            type="number"
-                           variant="trello"
+                           variant="jira"
                            value={task?.timeTrackingSpent || 0}
                            onBlur={handleChangeTime}
                            ref={timeSpendRef}
                            min="0"
                         />
-                     </div>
-                     <div className={cx("formGroup")}>
+                     </FormGroup>
+                     <FormGroup>
                         {/*--------------------- TASK TIME TRACKING REMAINING  -----------------------*/}
-                        <h4>Time remaining (hours)</h4>
+                        <Title>Time remaining (hours)</Title>
                         <TextField
                            type="number"
-                           variant="trello"
+                           variant="jira"
                            value={task?.timeTrackingRemaining || 0}
                            ref={timeRemainRef}
                            onBlur={handleChangeTime}
                            min="0"
                         />
-                     </div>
-                     <div className={cx("formGroup")}>
+                     </FormGroup>
+                     <FormGroup>
                         {/*--------------------- TASK TIME TRACKING  -----------------------*/}
-                        <h4>Time Tracking</h4>
+                        <Title>Time Tracking</Title>
                         <TimeTracking
                            ref={timeTrackingRef}
                            timeSpend={task?.timeTrackingSpent}
                            timeRemain={task?.timeTrackingRemaining}
                            label={false}
                         />
-                     </div>
-                  </div>
-               </section>
+                     </FormGroup>
+                  </BodyRight>
+               </Body>
             )}
          </DialogContent>
       </Dialog>

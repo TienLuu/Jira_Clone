@@ -1,1 +1,1 @@
-export { default } from './ProjectSetting'
+export { default } from "./ProjectSetting";

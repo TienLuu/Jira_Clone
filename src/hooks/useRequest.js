@@ -1,4 +1,15 @@
-import { useState, useMemo, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useMemo, useEffect, useState } from "react";
+
+const propTypes = {
+   services: PropTypes.func.isRequired,
+   options: PropTypes.shape({
+      manual: PropTypes.bool,
+      onSuccess: PropTypes.func,
+      onError: PropTypes.func,
+      onBefore: PropTypes.func,
+   }),
+};
 
 const useRequest = (
    service,
@@ -51,5 +62,7 @@ const useRequest = (
 
    return { run, runAsync, ...status };
 };
+
+useRequest.propTypes = propTypes;
 
 export default useRequest;

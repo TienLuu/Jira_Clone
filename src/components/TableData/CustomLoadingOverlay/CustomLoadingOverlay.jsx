@@ -1,24 +1,35 @@
+import PropTypes from "prop-types";
 import CloudQueueOutlinedIcon from "@mui/icons-material/CloudQueueOutlined";
-import styles from "./CustomLoadingOverlay.module.scss";
+import { Wrapper, LoaderWrapper, Overlay, Loader, LoaderInner } from "./Styles";
 
-const CustomLoadingOverlay = ({
-   message = "Data is loading ...",
-   overlay = false,
-}) => {
+const propTypes = {
+   message: PropTypes.string,
+   overlay: PropTypes.bool,
+};
+
+const defaultProps = {
+   message: "Data is loading ...",
+   overlay: false,
+};
+
+const CustomLoadingOverlay = ({ message, overlay }) => {
    return (
-      <div className={styles.wrapper}>
-         <div className={styles.loaderWrapper}>
+      <Wrapper>
+         <LoaderWrapper>
             <CloudQueueOutlinedIcon fontSize="inherit" color="inherit" />
-            <div className={styles.loader}>
-               <div className={styles.inner}></div>
-               <div className={styles.inner}></div>
-               <div className={styles.inner}></div>
-            </div>
+            <Loader>
+               <LoaderInner className="inner"></LoaderInner>
+               <LoaderInner className="inner"></LoaderInner>
+               <LoaderInner className="inner"></LoaderInner>
+            </Loader>
             <p>{message}</p>
-         </div>
-         {overlay && <div className={styles.overlay}></div>}
-      </div>
+         </LoaderWrapper>
+         {overlay && <Overlay></Overlay>}
+      </Wrapper>
    );
 };
+
+CustomLoadingOverlay.propTypes = propTypes;
+CustomLoadingOverlay.defaultProps = defaultProps;
 
 export default CustomLoadingOverlay;
